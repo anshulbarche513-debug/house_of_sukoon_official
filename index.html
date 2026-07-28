@@ -751,9 +751,9 @@ a:focus-visible, button:focus-visible, input:focus-visible{outline:2px solid var
       <li><a href="#rituals" data-nav>Rituals</a></li>
     </ul>
   <a href="#top" class="brand-logo-container">
-    <img src="logo.jpg" alt="house of Sukoon Official Official Logo" class="brand-logo-img">
+    <img src="logo.jpg" alt="house of Sukoon Official Logo" class="brand-logo-img">
     <div class="brand-text">
-        <span class="brand-name">house of Sukoon Official</span>
+        <span class="brand-name">house of Sukoon </span>
         <span class="brand-subtext">OFFICIAL</span>
     </div>
 </a>
@@ -876,7 +876,13 @@ a:focus-visible, button:focus-visible, input:focus-visible{outline:2px solid var
   <div class="container">
     <div class="story-wrap">
       <div class="story-media reveal">
-        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1000&auto=format&fit=crop" alt="Hand-blended perfumery, house of Sukoon Official">
+        <div class="brand-story-slider">
+    <img src="aura.jpg" class="slide-img active" alt="Aura">
+    <img src="shukra.jpg" class="slide-img" alt="Shukra">
+    <img src="mann.jpg" class="slide-img" alt="Mann">
+    <img src="surya.jpg" class="slide-img" alt="Surya">
+    <img src="kismat.jpg" class="slide-img" alt="Kismat">
+</div>
       </div>
       <div class="story-text reveal">
         <div class="eyebrow">Our Story</div>
@@ -917,7 +923,10 @@ a:focus-visible, button:focus-visible, input:focus-visible{outline:2px solid var
   <div class="container">
     <div class="footer-grid">
       <div>
-        <div class="footer-logo">HOUSE OF <span>SUKOON</span></div>
+        <div class="footer-logo" style="display: flex; flex-direction: column; align-items: flex-start;">
+    <span class="brand-name" style="font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; color: #ffffff;">HOUSE OF SUKOON</span>
+    <span class="brand-subtext" style="font-size: 0.6rem; font-weight: 400; letter-spacing: 3px; color: #c9a961; margin-top: 3px;">OFFICIAL</span>
+</div>
         <p class="footer-about">Ancient energies, crafted with modern fine perfumery. Hand-blended in small batches — wear your intention, live your energy.</p>
         <div class="social-row">
           <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
@@ -1809,6 +1818,17 @@ document.getElementById("newsletterForm").addEventListener("submit", async (e) =
 document.getElementById("year").textContent = new Date().getFullYear();
 updateCounts();
 renderRituals();
+    // Story Slider Animation Logic
+let currentSlide = 0;
+const slides = document.querySelectorAll('.brand-story-slider .slide-img');
+
+if (slides.length > 0) {
+    setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }, 3000); // Har 3 second me image fade hogi
+}
 loadProducts();
 </script>
 </body>
