@@ -13,6 +13,42 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+   .brand-logo-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.brand-logo-img {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.brand-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #ffffff;
+    line-height: 1.1;
+}
+
+.brand-subtext {
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.65);
+    margin-top: 3px;
+    text-transform: uppercase;
+}
 /* ============================================================
    HOUSE OF SUKOON — DESIGN TOKENS
    ============================================================ */
@@ -721,7 +757,13 @@ a:focus-visible, button:focus-visible, input:focus-visible{outline:2px solid var
       <li><a href="#" data-open="quizModal">Quiz</a></li>
       <li><a href="#rituals" data-nav>Rituals</a></li>
     </ul>
-    <a href="#top" class="nav-logo">HOUSE OF <span>SUKOON</span></a>
+   <a href="#top" class="brand-logo-container">
+    <img src="logo.jpg" alt="House of Sukoon Logo" class="brand-logo-img">
+    <div class="brand-text">
+        <span class="brand-name">HOUSE OF SUKOON</span>
+        <span class="brand-subtext">OFFICIAL</span>
+    </div>
+</a>
     <div class="nav-actions">
       <div class="nav-search-wrap" id="searchWrap">
         <button class="nav-icon-btn" id="searchToggle" aria-label="Search">
