@@ -1390,7 +1390,7 @@ function renderProducts(list){
     const outOfStock = p.in_stock === false;
     card.innerHTML = `
       <div class="pc-media">
-        <img src="aura.jpg" alt="${p.name} - ${p.tagline}" loading="lazy">
+       <img src="${p.image_url}" alt="${p.name}" loading="lazy">
         ${p.is_featured ? '<span class="pc-badge">Featured</span>' : ''}
         <button class="pc-wishlist ${isWished ? 'active' : ''}" data-wish="${p.id}" aria-label="Toggle wishlist">
           <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
