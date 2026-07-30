@@ -30,37 +30,8 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; }
     
-    /* Utility & Common Styles */
     .hidden { display: none !important; }
     .cell-muted { color: var(--text-muted); font-size: 0.82rem; }
-    
-    /* Login Overlay */
-    #loginOverlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: var(--bg-main); z-index: 9999; display: flex;
-      align-items: center; justify-content: center;
-    }
-    .login-card {
-      background: var(--bg-card); border: 1px solid var(--border-color);
-      padding: 40px; border-radius: 16px; width: 100%; max-width: 400px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center;
-    }
-    .login-card h2 { color: var(--gold-primary); margin-bottom: 8px; font-size: 1.6rem; }
-    .login-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
-    .form-group { margin-bottom: 16px; text-align: left; }
-    .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
-    .form-control {
-      width: 100%; background: var(--bg-input); border: 1px solid var(--border-color);
-      padding: 12px 16px; border-radius: 8px; color: var(--text-main); font-size: 0.95rem;
-      outline: none; transition: border-color 0.2s;
-    }
-    .form-control:focus { border-color: var(--gold-primary); }
-    .btn-gold {
-      background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-      color: #000; font-weight: 600; border: none; width: 100%; padding: 12px;
-      border-radius: 8px; cursor: pointer; font-size: 1rem; transition: opacity 0.2s;
-    }
-    .btn-gold:hover { opacity: 0.9; }
 
     /* Layout & Sidebar */
     #appLayout { display: flex; width: 100%; min-height: 100vh; }
@@ -93,7 +64,7 @@
     #toastContainer { position: fixed; bottom: 20px; right: 20px; z-index: 10000; }
     .toast {
       background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
-      padding: 12px 20px; border-radius: 8px; margin-top: 10px; box-align: shadow;
+      padding: 12px 20px; border-radius: 8px; margin-top: 10px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.4); animation: fadeIn 0.3s ease;
     }
     .toast.success { border-left: 4px solid var(--success); }
@@ -103,27 +74,8 @@
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
-  <div id="loginOverlay">
-    <div class="login-card">
-      <h2>House of Sukoon</h2>
-      <p>Admin Control Panel</p>
-      <form id="loginForm">
-        <div class="form-group">
-          <label>Admin Email</label>
-          <input type="email" id="loginEmail" class="form-control" required placeholder="admin@houseofsukoon.com">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="loginPassword" class="form-control" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn-gold">Login to Dashboard</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MAIN APP LAYOUT -->
-  <div id="appLayout" class="hidden">
+  <!-- MAIN APP LAYOUT (Directly Visible) -->
+  <div id="appLayout">
     <aside>
       <div class="sidebar-brand">Sukoon Admin</div>
       <ul class="sidebar-menu">
@@ -134,14 +86,13 @@
         <li><a href="#" data-page="reviews"><i class="fa-solid fa-star"></i> Reviews</a></li>
         <li><a href="#" data-page="coupons"><i class="fa-solid fa-ticket"></i> Coupons</a></li>
         <li><a href="#" data-page="content"><i class="fa-solid fa-globe"></i> Website Content</a></li>
-        <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
       </ul>
     </aside>
     
     <main>
       <header>
         <h1 id="pageTitle">Dashboard</h1>
-        <div id="adminUserEmail" class="cell-muted"></div>
+        <div class="cell-muted">Direct Access Mode</div>
       </header>
 
       <!-- PAGES CONTAINER -->
@@ -246,9 +197,9 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // Supabase Configuration (Apni details yahan dalein)
-    const SUPABASE_URL = "https://qqbeoquzaxweewlovcpl.supabase.co/rest/v1/";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxYmVvcXV6YXh3ZWV3bG92Y3BsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDAzOTYsImV4cCI6MjEwMDM3NjM5Nn0.1RffIvgVCk4h8jXD1zXKnP27knmLxgodSIkY2-LPffo";
+    // Apni Supabase URL aur Anon Key yahan sahi se daal dein
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let state = {
@@ -263,40 +214,6 @@
       el.textContent = message;
       container.appendChild(el);
       setTimeout(() => el.remove(), 3000);
-    }
-
-    // Authentication & Navigation
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
-      
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        toast(error.message, "error");
-      } else {
-        toast("Login successful!", "success");
-        checkAuthSession();
-      }
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      checkAuthSession();
-      toast("Logged out successfully", "success");
-    });
-
-    async function checkAuthSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        document.getElementById("loginOverlay").classList.add("hidden");
-        document.getElementById("appLayout").classList.remove("hidden");
-        document.getElementById("adminUserEmail").textContent = session.user.email;
-        loadAllData();
-      } else {
-        document.getElementById("loginOverlay").classList.remove("hidden");
-        document.getElementById("appLayout").classList.add("hidden");
-      }
     }
 
     // Sidebar Navigation Switching
@@ -360,8 +277,8 @@
       `).join("") : `<tr><td colspan="4"><div class="table-empty">No customers found.</div></td></tr>`;
     }
 
-    // Initialize session check on load
-    checkAuthSession();
+    // Automatically load data when page opens
+    loadAllData();
   </script>
 </body>
 </html>
