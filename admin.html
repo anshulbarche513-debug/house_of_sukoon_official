@@ -1140,7 +1140,7 @@ const authStorage = {
   removeItem: (key) => { localStorage.removeItem(key); sessionStorage.removeItem(key); }
 };
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+ supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: true, autoRefreshToken: true, storage: authStorage, detectSessionInUrl: true }
 });
 
