@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>House of Sukoon — Admin Dashboard</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Chart.js for Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-main: #0c0c0e;
+      --bg-card: #141418;
+      --bg-input: #1c1c24;
+      --border-color: #272732;
+      --gold-primary: #d4af37;
+      --gold-light: #f3e5ab;
+      --gold-dark: #aa8c2c;
+      --text-main: #f4f4f6;
+      --text-muted: #9ba1a6;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --sidebar-width: 260px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; }
+    
+    /* Utility & Common Styles */
+    .hidden { display: none !important; }
+    .cell-muted { color: var(--text-muted); font-size: 0.82rem; }
+    
+    /* Login Overlay */
+    #loginOverlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-main); z-index: 9999; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .login-card {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      padding: 40px; border-radius: 16px; width: 100%; max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center;
+    }
+    .login-card h2 { color: var(--gold-primary); margin-bottom: 8px; font-size: 1.6rem; }
+    .login-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; text-align: left; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
+    .form-control {
+      width: 100%; background: var(--bg-input); border: 1px solid var(--border-color);
+      padding: 12px 16px; border-radius: 8px; color: var(--text-main); font-size: 0.95rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-control:focus { border-color: var(--gold-primary); }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+      color: #000; font-weight: 600; border: none; width: 100%; padding: 12px;
+      border-radius: 8px; cursor: pointer; font-size: 1rem; transition: opacity 0.2s;
+    }
+    .btn-gold:hover { opacity: 0.9; }
+
+    /* Layout & Sidebar */
+    #appLayout { display: flex; width: 100%; min-height: 100vh; }
+    aside {
+      width: var(--sidebar-width); background: var(--bg-card); border-right: 1px solid var(--border-color);
+      display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100;
+    }
+    .sidebar-brand { padding: 24px; font-size: 1.2rem; font-weight: 700; color: var(--gold-primary); border-bottom: 1px solid var(--border-color); }
+    .sidebar-menu { list-style: none; padding: 16px; overflow-y: auto; flex: 1; }
+    .sidebar-menu li { margin-bottom: 6px; }
+    .sidebar-menu a {
+      display: flex; align-items: center; gap: 12px; padding: 10px 14px; color: var(--text-muted);
+      text-decoration: none; border-radius: 8px; font-size: 0.9rem; transition: all 0.2s;
+    }
+    .sidebar-menu a:hover, .sidebar-menu a.active { background: var(--bg-input); color: var(--gold-primary); }
+    
+    /* Main Content Area */
+    main { margin-left: var(--sidebar-width); flex: 1; padding: 30px; background: var(--bg-main); }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    header h1 { font-size: 1.8rem; color: var(--text-main); }
+    
+    /* Tables & Cards */
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; margin-top: 10px; }
+    th, td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+    th { color: var(--text-muted); font-weight: 600; }
+    .table-empty { text-align: center; padding: 40px; color: var(--text-muted); }
+
+    /* Toast Notification */
+    #toastContainer { position: fixed; bottom: 20px; right: 20px; z-index: 10000; }
+    .toast {
+      background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
+      padding: 12px 20px; border-radius: 8px; margin-top: 10px; box-align: shadow;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4); animation: fadeIn 0.3s ease;
+    }
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error { border-left: 4px solid var(--danger); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginOverlay">
+    <div class="login-card">
+      <h2>House of Sukoon</h2>
+      <p>Admin Control Panel</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Admin Email</label>
+          <input type="email" id="loginEmail" class="form-control" required placeholder="admin@houseofsukoon.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" class="form-control" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-gold">Login to Dashboard</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP LAYOUT -->
+  <div id="appLayout" class="hidden">
+    <aside>
+      <div class="sidebar-brand">Sukoon Admin</div>
+      <ul class="sidebar-menu">
+        <li><a href="#" class="active" data-page="dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="#" data-page="orders"><i class="fa-solid fa-box"></i> Orders</a></li>
+        <li><a href="#" data-page="products"><i class="fa-solid fa-tag"></i> Products</a></li>
+        <li><a href="#" data-page="customers"><i class="fa-solid fa-users"></i> Customers</a></li>
+        <li><a href="#" data-page="reviews"><i class="fa-solid fa-star"></i> Reviews</a></li>
+        <li><a href="#" data-page="coupons"><i class="fa-solid fa-ticket"></i> Coupons</a></li>
+        <li><a href="#" data-page="content"><i class="fa-solid fa-globe"></i> Website Content</a></li>
+        <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </aside>
+    
+    <main>
+      <header>
+        <h1 id="pageTitle">Dashboard</h1>
+        <div id="adminUserEmail" class="cell-muted"></div>
+      </header>
+
+      <!-- PAGES CONTAINER -->
+      <div id="pageContent">
+        <!-- Dashboard Page -->
+        <div class="page-view" id="view-dashboard">
+          <div class="card">
+            <h3>Welcome to House of Sukoon Management Panel</h3>
+            <p class="cell-muted" style="margin-top: 8px;">Select an option from the sidebar to manage your store data efficiently.</p>
+          </div>
+        </div>
+
+        <!-- Orders Page -->
+        <div class="page-view hidden" id="view-orders">
+          <div class="card">
+            <h3>Store Orders</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+                <tr><td colspan="5"><div class="table-empty">Loading orders...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Products Page -->
+        <div class="page-view hidden" id="view-products">
+          <div class="card">
+            <h3>Products Management</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Category</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <tr><td colspan="4"><div class="table-empty">Loading products...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Customers Page -->
+        <div class="page-view hidden" id="view-customers">
+          <div class="card">
+            <h3>Customer Database</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Joined</th>
+                </tr>
+              </thead>
+              <tbody id="customersTableBody">
+                <tr><td colspan="4"><div class="table-empty">Loading customers...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Reviews Page -->
+        <div class="page-view hidden" id="view-reviews">
+          <div class="card">
+            <h3>Customer Reviews</h3>
+            <div id="reviewsList"><div class="table-empty">Loading reviews...</div></div>
+          </div>
+        </div>
+
+        <!-- Coupons Page -->
+        <div class="page-view hidden" id="view-coupons">
+          <div class="card">
+            <h3>Discount Coupons</h3>
+            <div id="couponsTableBody"><div class="table-empty">Loading coupons...</div></div>
+          </div>
+        </div>
+
+        <!-- Content Page -->
+        <div class="page-view hidden" id="view-content">
+          <div class="card">
+            <h3>Website Content Management</h3>
+            <p class="cell-muted" style="margin-top: 5px;">Manage your store configuration seamlessly.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toastContainer"></div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Supabase Configuration (Apni details yahan dalein)
+    const SUPABASE_URL = "https://qqbeoquzaxweewlovcpl.supabase.co/rest/v1/";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxYmVvcXV6YXh3ZWV3bG92Y3BsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDAzOTYsImV4cCI6MjEwMDM3NjM5Nn0.1RffIvgVCk4h8jXD1zXKnP27knmLxgodSIkY2-LPffo";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let state = {
+      orders: [], products: [], customers: [], reviews: [], coupons: [],
+      currentPage: 'dashboard'
+    };
+
+    function toast(message, type = 'success') {
+      const container = document.getElementById("toastContainer");
+      const el = document.createElement("div");
+      el.className = `toast ${type}`;
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    // Authentication & Navigation
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+      
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        toast(error.message, "error");
+      } else {
+        toast("Login successful!", "success");
+        checkAuthSession();
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      checkAuthSession();
+      toast("Logged out successfully", "success");
+    });
+
+    async function checkAuthSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        document.getElementById("loginOverlay").classList.add("hidden");
+        document.getElementById("appLayout").classList.remove("hidden");
+        document.getElementById("adminUserEmail").textContent = session.user.email;
+        loadAllData();
+      } else {
+        document.getElementById("loginOverlay").classList.remove("hidden");
+        document.getElementById("appLayout").classList.add("hidden");
+      }
+    }
+
+    // Sidebar Navigation Switching
+    document.querySelectorAll(".sidebar-menu a[data-page]").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const page = link.getAttribute("data-page");
+        switchPage(page);
+      });
+    });
+
+    function switchPage(page) {
+      state.currentPage = page;
+      document.querySelectorAll(".sidebar-menu a").forEach(l => l.classList.remove("active"));
+      document.querySelector(`[data-page="${page}"]`)?.classList.add("active");
+
+      document.querySelectorAll(".page-view").forEach(v => v.classList.add("hidden"));
+      document.getElementById(`view-${page}`).classList.remove("hidden");
+      document.getElementById("pageTitle").textContent = page.charAt(0).toUpperCase() + page.slice(1);
+    }
+
+    async function loadAllData() {
+      try {
+        const [ordersRes, productsRes, custRes, revRes, coupRes] = await Promise.all([
+          supabase.from("orders").select("*"),
+          supabase.from("products").select("*"),
+          supabase.from("customers").select("*"),
+          supabase.from("reviews").select("*"),
+          supabase.from("coupons").select("*")
+        ]);
+
+        state.orders = ordersRes.data || [];
+        state.products = productsRes.data || [];
+        state.customers = custRes.data || [];
+        state.reviews = revRes.data || [];
+        state.coupons = coupRes.data || [];
+
+        renderAllTables();
+      } catch (err) {
+        toast("Error loading data from database", "error");
+      }
+    }
+
+    function renderAllTables() {
+      // Render Orders
+      const oBody = document.getElementById("ordersTableBody");
+      oBody.innerHTML = state.orders.length ? state.orders.map(o => `
+        <tr><td>#${o.id}</td><td>${o.customer_name || 'Guest'}</td><td>₹${o.total || 0}</td><td>${o.status || 'Pending'}</td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>
+      `).join("") : `<tr><td colspan="5"><div class="table-empty">No orders found.</div></td></tr>`;
+
+      // Render Products
+      const pBody = document.getElementById("productsTableBody");
+      pBody.innerHTML = state.products.length ? state.products.map(p => `
+        <tr><td>${p.name}</td><td>₹${p.price}</td><td>${p.stock || 0}</td><td>${p.category || 'General'}</td></tr>
+      `).join("") : `<tr><td colspan="4"><div class="table-empty">No products found.</div></td></tr>`;
+
+      // Render Customers
+      const cBody = document.getElementById("customersTableBody");
+      cBody.innerHTML = state.customers.length ? state.customers.map(c => `
+        <tr><td>${c.name || '—'}</td><td>${c.email || '—'}</td><td>${c.phone || '—'}</td><td>${new Date(c.created_at).toLocaleDateString()}</td></tr>
+      `).join("") : `<tr><td colspan="4"><div class="table-empty">No customers found.</div></td></tr>`;
+    }
+
+    // Initialize session check on load
+    checkAuthSession();
+  </script>
+</body>
+</html>
