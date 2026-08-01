@@ -1451,7 +1451,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     </div>
     <div class="footer-bottom">
       <span>© <span id="year"></span> House of Sukoon Official™. All rights reserved.</span>
-      <a href="/admin.html/" class="admin-link">Admin Login →</a>
+      <a href="/admin/" class="admin-link">Admin Login →</a>
     </div>
   </div>
 </footer>
@@ -1700,6 +1700,7 @@ const FALLBACK_PRODUCTS = [
     energyText:"Shukra Udgam channels magnetism and quiet authority — worn when you need to command a room without saying a word.",
     notes:{ top:"Bergamot, Pink Pepper", heart:"Saffron, Iris", base:"Sandalwood, Amber, White Musk" },
     concentration:"18–20% Extrait de Parfum", longevity:"8–10 hours", size:"50ml / 100ml",
+    family:"Floral Amber", occasion:"Evening gatherings, celebrations, moments that call for quiet presence",
     ritual:"Apply to pulse points — wrists, neck, behind the ears — before meetings or moments requiring presence." },
   { id:"ms-1", name:"Mann Shanti", tagline:"Stillness of the Mind",
     description:"A crystalline, calming composition for clarity and inner peace — soft sky-blue notes settling over our warm signature base.",
@@ -1709,6 +1710,7 @@ const FALLBACK_PRODUCTS = [
     energyText:"Mann Shanti is a grounding companion for meditation, deep focus, and quiet mornings — clarity you can wear.",
     notes:{ top:"Lavender, Mint", heart:"White Lotus, Violet", base:"Sandalwood, Amber, White Musk" },
     concentration:"18–20% Extrait de Parfum", longevity:"7–9 hours", size:"50ml / 100ml",
+    family:"Crystal Musk", occasion:"Meditation, quiet mornings, deep focus work",
     ritual:"Mist lightly before meditation or breathwork to anchor a calm, focused state." },
   { id:"st-1", name:"Surya Tej", tagline:"Radiance of the Sun",
     description:"A golden, radiant amber fragrance for warmth and quiet royalty — the scent of standing fully in your own light.",
@@ -1718,6 +1720,7 @@ const FALLBACK_PRODUCTS = [
     energyText:"Surya Tej is worn for milestones and mornings that demand confidence — radiant, golden, unmistakably present.",
     notes:{ top:"Blood Orange, Cardamom", heart:"Golden Amber, Cinnamon", base:"Sandalwood, Amber, White Musk" },
     concentration:"18–20% Extrait de Parfum", longevity:"8–10 hours", size:"50ml / 100ml",
+    family:"Golden Amber", occasion:"Milestones, mornings, moments that call for confidence",
     ritual:"Apply at sunrise to set an intention of confidence and radiance for the day ahead." },
   { id:"as-1", name:"Aura Shuddhi", tagline:"Purity of the Aura",
     description:"A soft, lavender-violet blend for charm and harmony — an aura-clearing fragrance for gentle magnetism.",
@@ -1727,6 +1730,7 @@ const FALLBACK_PRODUCTS = [
     energyText:"Aura Shuddhi softens and clears — worn to invite connection, ease tension, and restore harmony in your space.",
     notes:{ top:"Violet Leaf, Litchi", heart:"Lavender, Jasmine", base:"Sandalwood, Amber, White Musk" },
     concentration:"18–20% Extrait de Parfum", longevity:"7–9 hours", size:"50ml / 100ml",
+    family:"Soft Floral Woods", occasion:"Gatherings, difficult conversations, moments that call for harmony",
     ritual:"Wear before gatherings or difficult conversations to soften energy and invite harmony." },
   { id:"kc-1", name:"Kismat Connection", tagline:"Threads of Destiny",
     description:"A smoked-obsidian oud composition for mystery and depth — worn by those who trust the pull of alignment.",
@@ -1736,6 +1740,7 @@ const FALLBACK_PRODUCTS = [
     energyText:"Kismat Connection is the scent of fate finding its thread — deep, smoked, and quietly unforgettable.",
     notes:{ top:"Black Pepper, Smoke Accord", heart:"Oud, Rose", base:"Sandalwood, Amber, White Musk" },
     concentration:"18–20% Extrait de Parfum", longevity:"9–11 hours", size:"50ml / 100ml",
+    family:"Smoked Oud", occasion:"Reflection, alignment, nights of introspection",
     ritual:"Apply before sleep or reflection to support introspection and trust in your own timing." }
 ];
 
@@ -1962,7 +1967,6 @@ function trapFocus(e){
   } else if (!e.shiftKey && active === last){
     e.preventDefault(); first.focus();
   } else if (!panel.contains(active)){
-    // Focus somehow escaped the panel (e.g. programmatic focus elsewhere) — pull it back in.
     e.preventDefault(); first.focus();
   }
 }
@@ -1990,7 +1994,6 @@ function closeTop(){
     document.body.style.overflow = "";
     if (lastFocusedEl) lastFocusedEl.focus();
   } else {
-    // Return focus into whichever panel is now on top of the stack.
     const panel = topPanelEl();
     const f = panel ? getFocusableEls(panel)[0] : null;
     if (f) f.focus();
@@ -2021,7 +2024,7 @@ async function loadProducts(){
     if (supabaseClient){
       const { data, error } = await supabaseClient
         .from("products")
-        .select("id,name,tagline,description,price,image_url,is_featured,in_stock")
+        .select("id,name,tagline,description,price,image_url,is_featured,in_stock,family,occasion,story")
         .order("is_featured", { ascending:false });
       if (error) throw error;
       if (data && data.length){
@@ -2036,7 +2039,10 @@ async function loadProducts(){
           concentration: d.concentration || "18–20% Extrait de Parfum",
           longevity: d.longevity || "7–9 hours",
           size: d.size || "50ml / 100ml",
-          ritual: d.ritual || "Apply to pulse points for lasting effect."
+          ritual: d.ritual || "Apply to pulse points for lasting effect.",
+          family: d.family || "—",
+          occasion: d.occasion || "—",
+          story: d.story || d.description
         }));
       } else { PRODUCTS = FALLBACK_PRODUCTS; }
     } else { PRODUCTS = FALLBACK_PRODUCTS; }
@@ -2262,6 +2268,9 @@ function openQuickView(id){
       <div class="qv-price">${p.sale_price && p.sale_price < p.price ? `<span style="color:var(--muted);text-decoration:line-through;font-size:14px;margin-right:8px;">${formatINR(p.price)}</span>${formatINR(p.sale_price)}` : formatINR(p.price)}</div>
       <p class="qv-desc">${escapeHTML(p.description)}</p>
 
+      <span class="qv-block-label">The Story</span>
+      <p class="qv-desc">${escapeHTML(p.story || p.description)}</p>
+
       <span class="qv-block-label">Fragrance Pyramid</span>
       <div class="qv-pyramid">
         <div class="qv-pyramid-row"><span class="qv-pyramid-tier">Top Notes</span><span class="qv-pyramid-notes">${escapeHTML(p.notes.top)}</span></div>
@@ -2271,9 +2280,11 @@ function openQuickView(id){
 
       <span class="qv-block-label">Fragrance Details</span>
       <div class="qv-details-grid">
+        <div class="qv-detail-box"><span class="qd-label">Fragrance Family</span><span class="qd-val">${escapeHTML(p.family || '—')}</span></div>
         <div class="qv-detail-box"><span class="qd-label">Concentration</span><span class="qd-val">${escapeHTML(p.concentration)}</span></div>
         <div class="qv-detail-box"><span class="qd-label">Longevity</span><span class="qd-val">${escapeHTML(p.longevity)}</span></div>
         <div class="qv-detail-box"><span class="qd-label">Bottle Size</span><span class="qd-val">${escapeHTML(p.size)}</span></div>
+        <div class="qv-detail-box"><span class="qd-label">Best Occasion</span><span class="qd-val">${escapeHTML(p.occasion || '—')}</span></div>
         <div class="qv-detail-box"><span class="qd-label">Stock Status</span><span class="qd-val">${p.in_stock === false ? 'Out of Stock' : 'In Stock'}</span></div>
       </div>
 
@@ -2448,11 +2459,10 @@ document.querySelectorAll('[data-open="quizModal"]').forEach(b => b.addEventList
 }));
 
 /* ============================================================
-   REVIEWS
-   ============================================================ */
-/* ============================================================
    REVIEWS — real customer reviews only. No seed/fake data.
    Starts empty. Supabase-first, localStorage fallback.
+   Only reviews with approved=true are shown publicly; new
+   submissions wait for moderation in the admin dashboard.
    ============================================================ */
 function getReviews(){ return state.reviews || []; }
 
@@ -2498,14 +2508,15 @@ function renderReviews(){
   document.getElementById("reviewCountLabel").textContent = `Based on ${reviews.length} review${reviews.length===1?'':'s'}`;
 }
 
-/* Load real reviews from Supabase when connected; otherwise use whatever
-   has been saved locally (localStorage), which starts as an empty array. */
+/* Load only approved reviews from Supabase when connected; otherwise
+   fall back to whatever has been saved locally. */
 async function loadReviews(){
   try{
     if (supabaseClient){
       const { data, error } = await supabaseClient
         .from("reviews")
         .select("name,product,rating,text,verified")
+        .eq("approved", true)
         .order("created_at", { ascending:true });
       if (error) throw error;
       state.reviews = data || [];
@@ -2533,23 +2544,24 @@ document.getElementById("reviewForm").addEventListener("submit", async (e) => {
   const verified = document.getElementById("rev-verified").checked;
   const msgEl = document.getElementById("reviewMsg");
   if (!name || !text){ msgEl.textContent = "Please complete all fields."; msgEl.className = "form-msg error"; return; }
-  const newReview = { name, product, rating: selectedRating, text, verified };
+  const newReview = { name, product, rating: selectedRating, text, verified, approved: false };
   try{
     if (supabaseClient){
       const { error } = await supabaseClient.from("reviews").insert(newReview);
       if (error) throw error;
+    } else {
+      const pending = JSON.parse(localStorage.getItem("sukoon_pending_reviews") || "[]");
+      pending.push(newReview);
+      localStorage.setItem("sukoon_pending_reviews", JSON.stringify(pending));
     }
   }catch(err){ console.warn("Supabase review insert failed, saving locally:", err.message); }
-  state.reviews = getReviews().concat([newReview]);
-  persist();
-  renderReviews();
-  msgEl.textContent = "Thank you — your review is now live below.";
+  msgEl.textContent = "Thank you — your review has been submitted for moderation and will appear once approved.";
   msgEl.className = "form-msg success";
   e.target.reset();
   selectedRating = 5;
   document.querySelectorAll(".rating-star").forEach(s => s.classList.add("filled"));
   document.getElementById("rev-verified").checked = false;
-  setTimeout(() => { closeTop(); msgEl.textContent = ""; }, 1600);
+  setTimeout(() => { closeTop(); msgEl.textContent = ""; }, 1800);
 });
 
 /* ============================================================
