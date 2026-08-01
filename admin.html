@@ -48,13 +48,10 @@ body {
 button, input, select, textarea { font-family: inherit; }
 a { color: inherit; text-decoration: none; }
 
-/* ============================================================
-   LOGIN SCREEN (HIDDEN PER REQUEST)
-   ============================================================ */
 #loginScreen{
   position:fixed;inset:0;z-index:5000;
   background:radial-gradient(circle at top right, #111622, #07090e);
-  display:none;align-items:center;justify-content:center;
+  display:flex;align-items:center;justify-content:center;
 }
 #loginScreen.hidden{display:none;}
 .login-card{
@@ -96,9 +93,6 @@ a { color: inherit; text-decoration: none; }
 }
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ============================================================
-   APP SHELL
-   ============================================================ */
 #appShell{display:flex;}
 #appShell.hidden{display:none;}
 
@@ -267,9 +261,6 @@ header.topbar {
 .greeting-box h2 { font-family: 'Cinzel', serif; font-size: 1.7rem; color: var(--text-light); }
 .greeting-box p { font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; }
 
-/* ============================================================
-   PAGE SECTIONS
-   ============================================================ */
 .page-section{display:none;}
 .page-section.active{display:block;animation:fadeUp .5s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
@@ -337,18 +328,19 @@ header.topbar {
 }
 .toolbar input{min-width:220px;}
 
-/* ============================================================
-   TABLE COMPONENT
-   ============================================================ */
 .table-wrap{
   background:var(--bg-glass-card);border:1px solid var(--border-glass);border-radius:var(--radius-main);
-  overflow:hidden;backdrop-filter:blur(20px);
+  overflow-x:auto;backdrop-filter:blur(20px);
 }
 table{width:100%;border-collapse:collapse;font-size:0.82rem;}
 thead th{
   text-align:left;padding:0.9rem 1.1rem;color:var(--gold-primary);font-size:0.7rem;
   text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border-glass);white-space:nowrap;
 }
+th.th-sort{cursor:pointer;user-select:none;}
+th.th-sort i{font-size:0.62rem;opacity:0.5;margin-left:3px;}
+th.th-sort:hover{color:var(--gold-bright);}
+th.th-sort i.active{opacity:1;color:var(--gold-bright);}
 tbody td{padding:0.85rem 1.1rem;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--text-light);vertical-align:middle;}
 tbody tr:last-child td{border-bottom:none;}
 tbody tr:hover{background:rgba(212,175,55,0.04);}
@@ -387,9 +379,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
 .pagination button:disabled{opacity:0.35;cursor:not-allowed;}
 .pagination button:not(:disabled):hover{border-color:var(--gold-primary);color:var(--gold-primary);}
 
-/* ============================================================
-   BUTTONS
-   ============================================================ */
 .btn-gold {
   background: var(--gold-gradient); border: none; color: #000; font-weight: 700;
   padding: 0.75rem 1.5rem; border-radius: var(--radius-sm); cursor: pointer;
@@ -410,9 +399,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
 }
 .btn-danger-ghost:hover{background:var(--danger);color:#fff;}
 
-/* ============================================================
-   MODAL
-   ============================================================ */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(2,3,6,0.75);backdrop-filter:blur(6px);z-index:2000;
   display:flex;align-items:flex-start;justify-content:center;padding:3vh 20px;
@@ -494,9 +480,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
 .review-reply-box.show{display:block;}
 .review-reply-box textarea{width:100%;min-height:60px;background:var(--bg-input);border:1px solid var(--border-glass);color:#fff;border-radius:var(--radius-sm);padding:0.6rem;font-size:0.78rem;margin-bottom:0.5rem;}
 
-/* ============================================================
-   TOASTS
-   ============================================================ */
 #toastStack{position:fixed;bottom:24px;right:24px;z-index:6000;display:flex;flex-direction:column;gap:10px;}
 .toast{
   min-width:280px;max-width:360px;background:#0d1119;border:1px solid var(--border-glass);border-left:3px solid var(--gold-primary);
@@ -512,9 +495,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
 .toast.error i{color:var(--danger);}
 .toast.info i{color:var(--gold-primary);}
 
-/* ============================================================
-   MISC
-   ============================================================ */
 .content-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.4rem;}
 .legal-editor textarea{min-height:220px;}
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;}
@@ -540,10 +520,7 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
 </head>
 <body>
 
-<!-- ============================================================
-     LOGIN SCREEN (HIDDEN)
-     ============================================================ -->
-<div id="loginScreen" class="hidden">
+<div id="loginScreen">
   <div class="login-card">
     <div class="login-ring"><i class="fa-solid fa-crown"></i></div>
     <div class="login-mark">HOUSE OF SUKOON</div>
@@ -570,10 +547,7 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
   </div>
 </div>
 
-<!-- ============================================================
-     APP SHELL
-     ============================================================ -->
-<div id="appShell">
+<div id="appShell" class="hidden">
 
   <aside id="sidebar">
     <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left" id="sidebarToggleIcon"></i></button>
@@ -588,6 +562,8 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       <li class="nav-item" data-section="customers"><a><i class="fa-solid fa-users"></i> <span>Customers</span><span class="count-pill" id="navCountCustomers">0</span></a></li>
       <li class="nav-item" data-section="quiz"><a><i class="fa-solid fa-wand-magic-sparkles"></i> <span>Discovery Quiz</span><span class="count-pill" id="navCountQuiz">0</span></a></li>
       <li class="nav-item" data-section="reviews"><a><i class="fa-solid fa-star"></i> <span>Reviews</span><span class="count-pill" id="navCountReviews">0</span></a></li>
+      <li class="nav-item" data-section="newsletter"><a><i class="fa-solid fa-envelope-open-text"></i> <span>Newsletter</span><span class="count-pill" id="navCountNewsletter">0</span></a></li>
+      <li class="nav-item" data-section="contactmsgs"><a><i class="fa-solid fa-message"></i> <span>Contact Messages</span><span class="count-pill" id="navCountContact">0</span></a></li>
       <li class="nav-item" data-section="coupons"><a><i class="fa-solid fa-ticket"></i> <span>Coupons</span></a></li>
       <li class="nav-item" data-section="banners"><a><i class="fa-solid fa-image"></i> <span>Banners</span></a></li>
       <li class="nav-item" data-section="content"><a><i class="fa-solid fa-feather"></i> <span>Website Content</span></a></li>
@@ -631,9 +607,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       <p>House of Sukoon Official — Business Operating System.</p>
     </div>
 
-    <!-- ============================================================
-         DASHBOARD
-         ============================================================ -->
     <section class="page-section active" id="section-dashboard">
       <div class="metrics-grid">
         <div class="metric-card"><div class="icon-box"><i class="fa-solid fa-bag-shopping"></i></div><h3>Total Orders</h3><div class="value skeleton" id="mTotalOrders">—</div></div>
@@ -660,9 +633,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       </div>
     </section>
 
-    <!-- ============================================================
-         PRODUCTS
-         ============================================================ -->
     <section class="page-section" id="section-products">
       <div class="section-title">
         <span>Signature Fragrances Catalog</span>
@@ -691,7 +661,7 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Flags</th><th>Actions</th>
+            <th class="th-sort" onclick="setProductSort('name')">Product <i class="fa-solid fa-sort" id="sortIcon_p_name"></i></th><th>Category</th><th class="th-sort" onclick="setProductSort('price')">Price <i class="fa-solid fa-sort" id="sortIcon_p_price"></i></th><th class="th-sort" onclick="setProductSort('stock')">Stock <i class="fa-solid fa-sort" id="sortIcon_p_stock"></i></th><th>Status</th><th>Flags</th><th>Actions</th>
           </tr></thead>
           <tbody id="productsTableBody">
             <tr class="skeleton-row"><td colspan="7"></td></tr>
@@ -701,9 +671,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       </div>
     </section>
 
-    <!-- ============================================================
-         ORDERS
-         ============================================================ -->
     <section class="page-section" id="section-orders">
       <div class="section-title"><span>Orders</span></div>
       <div class="toolbar">
@@ -735,9 +702,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       </div>
     </section>
 
-    <!-- ============================================================
-         CUSTOMERS
-         ============================================================ -->
     <section class="page-section" id="section-customers">
       <div class="section-title">
         <span>Customers</span>
@@ -746,16 +710,13 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       <div class="toolbar"><input type="text" id="customerSearch" placeholder="Search by name, email, phone..."></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Contact</th><th>Address</th><th>Total Orders</th><th>Lifetime Value</th><th>Joined</th></tr></thead>
+          <thead><tr><th>Name</th><th>Contact</th><th>Address</th><th class="th-sort" onclick="setCustomerSort('orders')">Total Orders <i class="fa-solid fa-sort" id="sortIcon_c_orders"></i></th><th class="th-sort" onclick="setCustomerSort('ltv')">Lifetime Value <i class="fa-solid fa-sort" id="sortIcon_c_ltv"></i></th><th class="th-sort" onclick="setCustomerSort('joined')">Joined <i class="fa-solid fa-sort" id="sortIcon_c_joined"></i></th></tr></thead>
           <tbody id="customersTableBody"><tr class="skeleton-row"><td colspan="6"></td></tr></tbody>
         </table>
         <div class="pagination" id="customersPagination"></div>
       </div>
     </section>
 
-    <!-- ============================================================
-         DISCOVERY QUIZ LEADS
-         ============================================================ -->
     <section class="page-section" id="section-quiz">
       <div class="section-title"><span>Discovery Quiz Leads</span></div>
       <div class="toolbar"><input type="text" id="quizSearch" placeholder="Search by name, phone, recommended scent..."></div>
@@ -768,9 +729,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       </div>
     </section>
 
-    <!-- ============================================================
-         REVIEWS
-         ============================================================ -->
     <section class="page-section" id="section-reviews">
       <div class="section-title"><span>Reviews Moderation</span></div>
       <div class="toolbar">
@@ -785,9 +743,41 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       <div id="reviewsList"><div class="table-loading">Loading…</div></div>
     </section>
 
-    <!-- ============================================================
-         COUPONS
-         ============================================================ -->
+    <section class="page-section" id="section-newsletter">
+      <div class="section-title">
+        <span>Newsletter Subscribers</span>
+        <div class="st-actions"><button class="btn-ghost" id="exportNewsletterBtn"><i class="fa-solid fa-file-arrow-down"></i> Export CSV</button></div>
+      </div>
+      <div class="toolbar"><input type="text" id="newsletterSearch" placeholder="Search by email..."></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Email</th><th>Subscribed On</th><th>Actions</th></tr></thead>
+          <tbody id="newsletterTableBody"><tr class="skeleton-row"><td colspan="3"></td></tr></tbody>
+        </table>
+        <div class="pagination" id="newsletterPagination"></div>
+      </div>
+    </section>
+
+    <section class="page-section" id="section-contactmsgs">
+      <div class="section-title"><span>Contact Messages</span></div>
+      <div class="toolbar">
+        <input type="text" id="contactSearch" placeholder="Search by name, email, subject...">
+        <select id="contactStatusFilter">
+          <option value="">All</option>
+          <option value="unread">Unread</option>
+          <option value="read">Read</option>
+          <option value="replied">Replied</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>From</th><th>Subject</th><th>Message</th><th>Received</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="contactTableBody"><tr class="skeleton-row"><td colspan="6"></td></tr></tbody>
+        </table>
+        <div class="pagination" id="contactPagination"></div>
+      </div>
+    </section>
+
     <section class="page-section" id="section-coupons">
       <div class="section-title">
         <span>Coupon Manager</span>
@@ -801,9 +791,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       </div>
     </section>
 
-    <!-- ============================================================
-         BANNERS
-         ============================================================ -->
     <section class="page-section" id="section-banners">
       <div class="section-title">
         <span>Homepage Banners</span>
@@ -812,9 +799,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       <div class="media-grid" id="bannersGrid"><div class="table-loading">Loading…</div></div>
     </section>
 
-    <!-- ============================================================
-         WEBSITE CONTENT MANAGER
-         ============================================================ -->
     <section class="page-section" id="section-content">
       <div class="section-title"><span>Website Content Manager</span></div>
       <div class="content-grid">
@@ -907,9 +891,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       </div>
     </section>
 
-    <!-- ============================================================
-         MEDIA MANAGER
-         ============================================================ -->
     <section class="page-section" id="section-media">
       <div class="section-title"><span>Media Manager</span></div>
       <div class="glass-form">
@@ -925,9 +906,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
       <div class="media-grid" id="mediaGrid"><div class="table-loading">Loading…</div></div>
     </section>
 
-    <!-- ============================================================
-         SETTINGS
-         ============================================================ -->
     <section class="page-section" id="section-settings">
       <div class="section-title"><span>Settings</span></div>
       <div class="content-grid">
@@ -951,9 +929,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
   </main>
 </div>
 
-<!-- ============================================================
-     PRODUCT MODAL
-     ============================================================ -->
 <div class="modal-overlay" id="productModalOverlay">
   <div class="modal-box">
     <div class="modal-head">
@@ -991,8 +966,14 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
             <div class="form-group"><label>Top Notes</label><input type="text" id="pTopNotes" placeholder="Bergamot, Pink Pepper"></div>
             <div class="form-group"><label>Heart Notes</label><input type="text" id="pHeartNotes" placeholder="Saffron, Iris"></div>
             <div class="form-group"><label>Base Notes</label><input type="text" id="pBaseNotes" placeholder="Sandalwood, Amber, White Musk"></div>
+            <div class="form-group"><label>Longevity</label><input type="text" id="pLongevity" placeholder="8-10 hours"></div>
+            <div class="form-group"><label>Projection / Sillage</label><input type="text" id="pProjection" placeholder="Moderate to Strong"></div>
             <div class="form-group full"><label>Ingredients</label><textarea id="pIngredients" placeholder="Full ingredient list..."></textarea></div>
             <div class="form-group full"><label>How To Apply</label><textarea id="pHowToApply" placeholder="Apply to pulse points — wrists, neck, behind the ears..."></textarea></div>
+            <div class="form-group full"><label>Full Story</label><textarea id="pStory" placeholder="The longer editorial story behind this fragrance..."></textarea></div>
+            <div class="form-group full"><label>Benefits</label><textarea id="pBenefits" placeholder="What wearing this fragrance is meant to support..."></textarea></div>
+            <div class="form-group full"><label>Warnings</label><textarea id="pWarnings" placeholder="Patch test recommended. Avoid direct contact with eyes..."></textarea></div>
+            <div class="form-group full"><label>Storage Instructions</label><textarea id="pStorage" placeholder="Store in a cool, dry place away from direct sunlight."></textarea></div>
           </div>
         </div>
 
@@ -1002,6 +983,8 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
             <div class="form-group"><label>Chakra</label><input type="text" id="pChakra" placeholder="Heart Chakra"></div>
             <div class="form-group"><label>Lucky Colour</label><input type="text" id="pLuckyColour" placeholder="Rose Gold"></div>
             <div class="form-group"><label>Lucky Number</label><input type="text" id="pLuckyNumber" placeholder="6"></div>
+            <div class="form-group"><label>Lucky Day</label><input type="text" id="pLuckyDay" placeholder="Friday"></div>
+            <div class="form-group"><label>Best Occasion</label><input type="text" id="pOccasion" placeholder="Evening gatherings, celebrations"></div>
             <div class="form-group full"><label>Weekly Guide (which day this fragrance is recommended for, and why)</label><textarea id="pWeeklyGuide" placeholder="Best worn on Fridays — a day of magnetism and grace."></textarea></div>
           </div>
         </div>
@@ -1046,9 +1029,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
   </div>
 </div>
 
-<!-- ============================================================
-     ORDER DETAIL MODAL
-     ============================================================ -->
 <div class="modal-overlay" id="orderModalOverlay">
   <div class="modal-box">
     <div class="modal-head">
@@ -1063,9 +1043,6 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
   </div>
 </div>
 
-<!-- ============================================================
-     COUPON MODAL
-     ============================================================ -->
 <div class="modal-overlay" id="couponModalOverlay">
   <div class="modal-box modal-sm">
     <div class="modal-head">
@@ -1103,14 +1080,12 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
   </div>
 </div>
 
-<!-- ============================================================
-     BANNER MODAL
-     ============================================================ -->
 <div class="modal-overlay" id="bannerModalOverlay">
   <div class="modal-box modal-sm">
-    <div class="modal-head"><h3>Add Banner</h3><div class="modal-close" id="closeBannerModal"><i class="fa-solid fa-xmark"></i></div></div>
+    <div class="modal-head"><h3 id="bannerModalTitle">Add Banner</h3><div class="modal-close" id="closeBannerModal"><i class="fa-solid fa-xmark"></i></div></div>
     <div class="modal-body">
       <form id="bannerForm">
+        <input type="hidden" id="bannerId">
         <div class="form-group" style="margin-bottom:0.9rem;"><label>Image URL</label><input type="text" id="bannerImage" placeholder="banner-1.jpg" required></div>
         <div class="form-group" style="margin-bottom:0.9rem;"><label>Link URL</label><input type="text" id="bannerLink" placeholder="#collections"></div>
         <div class="form-group" style="margin-bottom:0.9rem;"><label>Sort Order</label><input type="number" id="bannerSort" placeholder="1" value="1"></div>
@@ -1120,6 +1095,20 @@ tbody tr:hover{background:rgba(212,175,55,0.04);}
     <div class="modal-foot">
       <button class="btn-ghost" id="cancelBannerBtn">Cancel</button>
       <button class="btn-gold" form="bannerForm" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Banner</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="customerModalOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="customerModalTitle">Customer Details</h3>
+      <div class="modal-close" id="closeCustomerModal"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="modal-body" id="customerModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="closeCustomerModalBtn2">Close</button>
+      <button class="btn-gold" id="saveCustomerNotesBtn"><i class="fa-solid fa-floppy-disk"></i> Save Notes</button>
     </div>
   </div>
 </div>
@@ -1140,7 +1129,7 @@ const authStorage = {
   removeItem: (key) => { localStorage.removeItem(key); sessionStorage.removeItem(key); }
 };
 
- supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: true, autoRefreshToken: true, storage: authStorage, detectSessionInUrl: true }
 });
 
@@ -1161,7 +1150,6 @@ const PLACEHOLDER_IMG = "data:image/svg+xml;base64," + btoa(PLACEHOLDER_SVG);
 function withFallback(url){ return url && String(url).trim() ? url : PLACEHOLDER_IMG; }
 function onImgError(el){ el.onerror = null; el.src = PLACEHOLDER_IMG; }
 window.onImgError = onImgError;
-
 function toast(msg, type){
   type = type || "info";
   const icon = type === "success" ? "fa-circle-check" : type === "error" ? "fa-circle-exclamation" : "fa-circle-info";
@@ -1183,23 +1171,75 @@ async function safeQuery(promise, tableLabel){
   }
 }
 
-// Automatically bypass login screen display and initialize app directly
-function checkSession(){
-  onAuthedDirect();
+const loginScreen = document.getElementById("loginScreen");
+const appShell = document.getElementById("appShell");
+
+async function checkSession(){
+  rememberMeFlag = localStorage.getItem("sukoon_remember_pref") !== "false";
+  document.getElementById("loginRemember").checked = rememberMeFlag;
+  try{
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    if (session){ onAuthed(session); }
+    else { loginScreen.classList.remove("hidden"); appShell.classList.add("hidden"); }
+  }catch(err){
+    console.warn("Session check failed:", err.message);
+    loginScreen.classList.remove("hidden");
+    appShell.classList.add("hidden");
+  }
 }
 
-function onAuthedDirect(){
-  document.getElementById("adminEmailLabel").textContent = "admin@houseofsukoon.com";
-  document.getElementById("adminNameLabel").textContent = "Admin";
-  document.getElementById("settingsEmail").value = "admin@houseofsukoon.com";
+function onAuthed(session){
+  loginScreen.classList.add("hidden");
+  appShell.classList.remove("hidden");
+  const email = session.user.email || "Admin";
+  document.getElementById("adminEmailLabel").textContent = email;
+  document.getElementById("adminNameLabel").textContent = email.split("@")[0];
+  document.getElementById("settingsEmail").value = email;
   const hour = new Date().getHours();
   const g = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
-  document.getElementById("greetingText").textContent = `${g}, Admin 👋`;
+  document.getElementById("greetingText").textContent = `${g}, ${email.split("@")[0]} 👋`;
   initApp();
 }
 
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const remember = document.getElementById("loginRemember").checked;
+  const errEl = document.getElementById("loginError");
+  const spinner = document.getElementById("loginSpinner");
+  const label = document.getElementById("loginBtnLabel");
+  const btn = document.getElementById("loginSubmitBtn");
+  errEl.classList.remove("show");
+  if (!email || !password){
+    errEl.textContent = "Please enter both email and password.";
+    errEl.classList.add("show");
+    return;
+  }
+  btn.disabled = true; spinner.style.display = "inline-block"; label.textContent = "SIGNING IN...";
+  rememberMeFlag = remember;
+  localStorage.setItem("sukoon_remember_pref", String(remember));
+  try{
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    if (!data.session) throw new Error("Sign-in succeeded but no session was returned. Please try again.");
+    onAuthed(data.session);
+  }catch(err){
+    errEl.textContent = err.message || "Invalid credentials. Please try again.";
+    errEl.classList.add("show");
+  }finally{
+    btn.disabled = false; spinner.style.display = "none"; label.textContent = "SIGN IN";
+  }
+});
+
 async function doLogout(){
-  location.reload();
+  try{ await supabase.auth.signOut(); }
+  catch(err){ console.warn("Sign out request failed, clearing local session anyway:", err.message); }
+  finally{
+    localStorage.removeItem("sukoon_remember_pref");
+    location.reload();
+  }
 }
 document.getElementById("sidebarLogout").addEventListener("click", (e) => { e.preventDefault(); doLogout(); });
 document.getElementById("topLogoutBtn").addEventListener("click", doLogout);
@@ -1216,12 +1256,23 @@ document.getElementById("changePasswordBtn").addEventListener("click", async () 
   }catch(err){ toast(err.message, "error"); }
 });
 
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_OUT" || (!session && event !== "INITIAL_SESSION")){
+    appInitialized = false;
+    loginScreen.classList.remove("hidden");
+    appShell.classList.add("hidden");
+  } else if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session && appShell.classList.contains("hidden")){
+    onAuthed(session);
+  }
+});
+
 checkSession();
 
-var appInitialized = false;
+let appInitialized = false;
 const state = {
   products: [], orders: [], customers: [], reviews: [], coupons: [], banners: [], media: [], quizLeads: [],
-  productsPage: 1, ordersPage: 1, customersPage: 1, quizPage: 1,
+  newsletter: [], contactMessages: [],
+  productsPage: 1, ordersPage: 1, customersPage: 1, quizPage: 1, newsletterPage: 1, contactPage: 1,
   pageSize: 8
 };
 
@@ -1234,11 +1285,14 @@ function initApp(){
   bindOrderModal();
   bindCouponModal();
   bindBannerModal();
+  bindCustomerModal();
   bindContentEditors();
   bindMediaManager();
   bindQuizFilters();
   bindCustomerFilters();
   bindReviewFilters();
+  bindNewsletterFilters();
+  bindContactFilters();
   refreshAll();
   checkConnection();
 }
@@ -1285,7 +1339,6 @@ function goToSection(name){
 
 function bindSearch(){
   const input = document.getElementById("globalSearch");
-  const results = document.getElementById("searchResults");
   input.addEventListener("input", debounce(() => runSearch(input.value.trim()), 220));
   input.addEventListener("focus", () => { if (input.value.trim()) runSearch(input.value.trim()); });
   document.addEventListener("keydown", (e) => {
@@ -1323,7 +1376,8 @@ function runSearch(q){
 async function refreshAll(){
   await Promise.all([
     loadProducts(), loadOrders(), loadCustomers(), loadReviews(),
-    loadCoupons(), loadBanners(), loadMedia(), loadQuizLeads(), loadContent()
+    loadCoupons(), loadBanners(), loadMedia(), loadQuizLeads(), loadContent(),
+    loadNewsletter(), loadContactMessages()
   ]);
   renderDashboard();
 }
@@ -1332,7 +1386,7 @@ async function checkConnection(){
   const box = document.getElementById("connectionStatusBox");
   const { error } = await supabase.from("products").select("id", { count:"exact", head:true });
   if (error){
-    box.innerHTML = `<span style="color:var(--warning);"><i class="fa-solid fa-triangle-exclamation"></i> Connected to Supabase, but one or more expected tables were not found.</span>`;
+    box.innerHTML = `<span style="color:var(--warning);"><i class="fa-solid fa-triangle-exclamation"></i> Connected to Supabase, but one or more expected tables were not found. See the schema comment near the top of this file.</span>`;
   } else {
     box.innerHTML = `<span style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> Connected to Supabase project successfully.</span>`;
   }
@@ -1343,8 +1397,8 @@ function renderDashboard(){
   const today = new Date().toDateString();
   const todayOrders = orders.filter(o => o.created_at && new Date(o.created_at).toDateString() === today);
   const revenue = orders.reduce((s,o) => s + Number(o.total || 0), 0);
-  const pending = orders.filter(o => o.status === "pending" || o.status === "processing").length;
-  const completed = orders.filter(o => o.status === "completed").length;
+  const pending = orders.filter(o => o.status === "pending" || o.status === "processing" || o.status === "confirmed" || o.status === "packed").length;
+  const completed = orders.filter(o => o.status === "completed" || o.status === "delivered").length;
   const lowStock = state.products.filter(p => Number(p.stock) < 5).length;
 
   setMetric("mTotalOrders", orders.length);
@@ -1361,11 +1415,15 @@ function renderDashboard(){
   document.getElementById("navCountCustomers").textContent = state.customers.length;
   document.getElementById("navCountQuiz").textContent = state.quizLeads.length;
   document.getElementById("navCountReviews").textContent = state.reviews.filter(r => r.status === "pending" || !r.status).length;
+  document.getElementById("navCountNewsletter").textContent = state.newsletter.length;
+  document.getElementById("navCountContact").textContent = state.contactMessages.filter(m => (m.status || "unread") === "unread").length;
 
   const notifBadge = document.getElementById("notifBadge");
   const pendingReviews = state.reviews.filter(r => r.status === "pending" || !r.status);
+  const unreadMsgs = state.contactMessages.filter(m => (m.status || "unread") === "unread");
   const notifItems = [];
   if (pendingReviews.length) notifItems.push(`${pendingReviews.length} review${pendingReviews.length===1?'':'s'} awaiting approval`);
+  if (unreadMsgs.length) notifItems.push(`${unreadMsgs.length} unread contact message${unreadMsgs.length===1?'':'s'}`);
   if (lowStock) notifItems.push(`${lowStock} product${lowStock===1?'':'s'} running low on stock`);
   if (pending) notifItems.push(`${pending} order${pending===1?'':'s'} pending fulfillment`);
   notifBadge.classList.toggle("show", notifItems.length > 0);
@@ -1398,9 +1456,10 @@ function setMetric(id, val){
 }
 function statusBadge(status){
   const map = {
-    pending: "badge-warning", processing: "badge-warning", shipped: "badge-gold",
-    completed: "badge-success", approved: "badge-success", cancelled: "badge-danger",
-    rejected: "badge-danger", active: "badge-success", inactive: "badge-muted", draft: "badge-muted"
+    pending: "badge-warning", processing: "badge-warning", confirmed: "badge-warning", packed: "badge-gold",
+    shipped: "badge-gold", completed: "badge-success", delivered: "badge-success", approved: "badge-success",
+    cancelled: "badge-danger", returned: "badge-danger", rejected: "badge-danger",
+    active: "badge-success", inactive: "badge-muted", draft: "badge-muted"
   };
   const cls = map[status] || "badge-muted";
   return `<span class="badge ${cls}">${escapeHTML(status || "pending")}</span>`;
@@ -1411,17 +1470,38 @@ async function loadProducts(){
   state.products = data || [];
   renderProductsTable();
 }
+let productSortKey = null, productSortDir = 1;
+function setProductSort(key){
+  productSortDir = (productSortKey === key) ? -productSortDir : 1;
+  productSortKey = key;
+  document.querySelectorAll('[id^="sortIcon_p_"]').forEach(i => { i.className = "fa-solid fa-sort"; });
+  const icon = document.getElementById("sortIcon_p_" + key);
+  if (icon) icon.className = "fa-solid " + (productSortDir === 1 ? "fa-sort-up active" : "fa-sort-down active");
+  state.productsPage = 1;
+  renderProductsTable();
+}
 function getFilteredProducts(){
   const q = (document.getElementById("productSearch")?.value || "").toLowerCase();
   const statusF = document.getElementById("productStatusFilter")?.value || "";
   const flagF = document.getElementById("productFlagFilter")?.value || "";
-  return state.products.filter(p => {
+  const list = state.products.filter(p => {
     if (q && !((p.name||"")+(p.category||"")+(p.family||"")).toLowerCase().includes(q)) return false;
     if (statusF && p.status !== statusF) return false;
     if (flagF === "low_stock" && !(Number(p.stock) < 5)) return false;
     else if (flagF && flagF !== "low_stock" && !p[flagF]) return false;
     return true;
   });
+  if (productSortKey){
+    list.sort((a,b) => {
+      let av = a[productSortKey], bv = b[productSortKey];
+      if (productSortKey === "price" || productSortKey === "stock"){ av = Number(av)||0; bv = Number(bv)||0; }
+      else { av = (av||"").toString().toLowerCase(); bv = (bv||"").toString().toLowerCase(); }
+      if (av < bv) return -1 * productSortDir;
+      if (av > bv) return 1 * productSortDir;
+      return 0;
+    });
+  }
+  return list;
 }
 function renderProductsTable(){
   const tbody = document.getElementById("productsTableBody");
@@ -1510,12 +1590,20 @@ function openProductModal(product){
   document.getElementById("pTopNotes").value = product?.top_notes || "";
   document.getElementById("pHeartNotes").value = product?.heart_notes || "";
   document.getElementById("pBaseNotes").value = product?.base_notes || "";
+  document.getElementById("pLongevity").value = product?.longevity || "";
+  document.getElementById("pProjection").value = product?.projection || "";
   document.getElementById("pIngredients").value = product?.ingredients || "";
   document.getElementById("pHowToApply").value = product?.how_to_apply || "";
+  document.getElementById("pStory").value = product?.story || "";
+  document.getElementById("pBenefits").value = product?.benefits || "";
+  document.getElementById("pWarnings").value = product?.warnings || "";
+  document.getElementById("pStorage").value = product?.storage_instructions || "";
   document.getElementById("pPlanet").value = product?.planet || "";
   document.getElementById("pChakra").value = product?.chakra || "";
   document.getElementById("pLuckyColour").value = product?.lucky_colour || "";
   document.getElementById("pLuckyNumber").value = product?.lucky_number || "";
+  document.getElementById("pLuckyDay").value = product?.lucky_day || "";
+  document.getElementById("pOccasion").value = product?.occasion || "";
   document.getElementById("pWeeklyGuide").value = product?.weekly_guide || "";
   document.getElementById("pStatus").value = product?.status || "active";
   document.getElementById("pFeatured").checked = !!product?.featured;
@@ -1544,12 +1632,15 @@ function addImageRow(url){
   row.id = id;
   row.innerHTML = `
     <img src="${escapeHTML(withFallback(url))}" onerror="onImgError(this)">
-    <input type="text" value="${escapeHTML(url||'')}" placeholder="image-url.jpg" oninput="this.previousElementSibling.src=this.value ? this.value : '${PLACEHOLDER_IMG}'">
+    <input type="text" value="${escapeHTML(url||'')}" placeholder="image-url.jpg">
     <div class="img-actions">
       <button type="button" title="Move up" onclick="moveImageRow('${id}',-1)"><i class="fa-solid fa-arrow-up"></i></button>
       <button type="button" title="Move down" onclick="moveImageRow('${id}',1)"><i class="fa-solid fa-arrow-down"></i></button>
       <button type="button" title="Remove" onclick="document.getElementById('${id}').remove()"><i class="fa-solid fa-xmark"></i></button>
     </div>`;
+  const imgEl = row.querySelector("img");
+  const inputEl = row.querySelector("input");
+  inputEl.addEventListener("input", () => { imgEl.src = inputEl.value ? inputEl.value : PLACEHOLDER_IMG; });
   wrap.appendChild(row);
 }
 function moveImageRow(id, dir){
@@ -1575,12 +1666,20 @@ async function saveProduct(e){
     top_notes: document.getElementById("pTopNotes").value.trim(),
     heart_notes: document.getElementById("pHeartNotes").value.trim(),
     base_notes: document.getElementById("pBaseNotes").value.trim(),
+    longevity: document.getElementById("pLongevity").value.trim(),
+    projection: document.getElementById("pProjection").value.trim(),
     ingredients: document.getElementById("pIngredients").value.trim(),
     how_to_apply: document.getElementById("pHowToApply").value.trim(),
+    story: document.getElementById("pStory").value.trim(),
+    benefits: document.getElementById("pBenefits").value.trim(),
+    warnings: document.getElementById("pWarnings").value.trim(),
+    storage_instructions: document.getElementById("pStorage").value.trim(),
     planet: document.getElementById("pPlanet").value.trim(),
     chakra: document.getElementById("pChakra").value.trim(),
     lucky_colour: document.getElementById("pLuckyColour").value.trim(),
     lucky_number: document.getElementById("pLuckyNumber").value.trim(),
+    lucky_day: document.getElementById("pLuckyDay").value.trim(),
+    occasion: document.getElementById("pOccasion").value.trim(),
     weekly_guide: document.getElementById("pWeeklyGuide").value.trim(),
     status: document.getElementById("pStatus").value,
     featured: document.getElementById("pFeatured").checked,
@@ -1592,6 +1691,8 @@ async function saveProduct(e){
     images: images,
     image_url: images[0] || null
   };
+  const saveBtn = document.getElementById("saveProductBtn");
+  saveBtn.disabled = true;
   try{
     let error;
     if (id){ ({ error } = await supabase.from("products").update(payload).eq("id", id)); }
@@ -1602,6 +1703,7 @@ async function saveProduct(e){
     await loadProducts();
     renderDashboard();
   }catch(err){ toast("Failed to save product: " + err.message, "error"); }
+  finally{ saveBtn.disabled = false; }
 }
 function editProduct(id){
   const p = state.products.find(p => p.id === id);
@@ -1617,9 +1719,10 @@ function previewProduct(id){
     <style>body{font-family:Georgia,serif;background:#0c0c0e;color:#f6f1e6;padding:24px;text-align:center;}
     img{width:100%;max-width:320px;border-radius:8px;margin-bottom:16px;}
     h1{font-size:22px;} p{color:#a79c8a;font-size:13px;line-height:1.7;}</style></head>
-    <body><img src="${escapeHTML(cover)}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'"><h1>${escapeHTML(p.name)}</h1><p>${escapeHTML(p.subtitle||'')}</p>
+    <body><img src="${escapeHTML(cover)}"><h1>${escapeHTML(p.name)}</h1><p>${escapeHTML(p.subtitle||'')}</p>
     <p>${escapeHTML(p.description||'')}</p><h2>${formatINR(p.price)}</h2></body></html>
   `);
+  w.document.close();
 }
 async function deleteProduct(id){
   if (!confirm("Remove this perfume from the catalog? This cannot be undone.")) return;
@@ -1648,6 +1751,7 @@ function getFilteredOrders(){
     return true;
   });
 }
+const ORDER_STATUSES = ["pending","confirmed","packed","shipped","delivered","cancelled","returned"];
 function renderOrdersTable(){
   const tbody = document.getElementById("ordersTableBody");
   const list = getFilteredOrders();
@@ -1666,7 +1770,7 @@ function renderOrdersTable(){
       <td>${statusBadge(o.payment_status||'pending')}</td>
       <td>
         <select onchange="updateOrderStatus(${o.id}, this.value)" style="background:var(--bg-input);color:#fff;border:1px solid var(--border-glass);border-radius:8px;padding:4px 8px;font-size:0.72rem;">
-          ${["pending","processing","shipped","completed","cancelled"].map(s => `<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join("")}
+          ${ORDER_STATUSES.map(s => `<option value="${s}" ${o.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join("")}
         </select>
       </td>
       <td class="cell-muted">${escapeHTML(o.tracking_number||'—')}</td>
@@ -1732,9 +1836,31 @@ async function loadCustomers(){
   state.customers = data || [];
   renderCustomersTable();
 }
+let customerSortKey = null, customerSortDir = 1;
+function setCustomerSort(key){
+  customerSortDir = (customerSortKey === key) ? -customerSortDir : 1;
+  customerSortKey = key;
+  document.querySelectorAll('[id^="sortIcon_c_"]').forEach(i => { i.className = "fa-solid fa-sort"; });
+  const icon = document.getElementById("sortIcon_c_" + key);
+  if (icon) icon.className = "fa-solid " + (customerSortDir === 1 ? "fa-sort-up active" : "fa-sort-down active");
+  state.customersPage = 1;
+  renderCustomersTable();
+}
 function getFilteredCustomers(){
   const q = (document.getElementById("customerSearch")?.value || "").toLowerCase();
-  return state.customers.filter(c => !q || ((c.name||"")+(c.email||"")+(c.phone||"")).toLowerCase().includes(q));
+  const list = state.customers.filter(c => !q || ((c.name||"")+(c.email||"")+(c.phone||"")).toLowerCase().includes(q));
+  if (customerSortKey){
+    list.sort((a,b) => {
+      let av, bv;
+      if (customerSortKey === "orders"){ av = customerOrderStats(a.email).count; bv = customerOrderStats(b.email).count; }
+      else if (customerSortKey === "ltv"){ av = customerOrderStats(a.email).ltv; bv = customerOrderStats(b.email).ltv; }
+      else { av = new Date(a.created_at||0).getTime(); bv = new Date(b.created_at||0).getTime(); }
+      if (av < bv) return -1 * customerSortDir;
+      if (av > bv) return 1 * customerSortDir;
+      return 0;
+    });
+  }
+  return list;
 }
 function customerOrderStats(email){
   const custOrders = state.orders.filter(o => o.customer_email === email);
@@ -1752,7 +1878,7 @@ function renderCustomersTable(){
   const { pageItems, pageInfo } = paginate(list, state.customersPage, state.pageSize);
   tbody.innerHTML = pageItems.map(c => {
     const stats = customerOrderStats(c.email);
-    return `<tr>
+    return `<tr style="cursor:pointer;" onclick="viewCustomer(${c.id})">
       <td>${escapeHTML(c.name||'—')}</td>
       <td class="cell-muted">${escapeHTML(c.email||'')}<br>${escapeHTML(c.phone||'')}</td>
       <td class="cell-muted">${escapeHTML(c.address||'—')}</td>
@@ -1780,6 +1906,56 @@ function exportCustomersCSV(){
   a.href = url; a.download = "sukoon-customers.csv"; a.click();
   URL.revokeObjectURL(url);
   toast("Customer list exported", "success");
+}
+
+let currentCustomerId = null;
+function bindCustomerModal(){
+  document.getElementById("closeCustomerModal").addEventListener("click", closeCustomerModal);
+  document.getElementById("closeCustomerModalBtn2").addEventListener("click", closeCustomerModal);
+  document.getElementById("saveCustomerNotesBtn").addEventListener("click", saveCustomerNotes);
+}
+function closeCustomerModal(){ document.getElementById("customerModalOverlay").classList.remove("show"); currentCustomerId = null; }
+function viewCustomer(id){
+  const c = state.customers.find(c => c.id === id);
+  if (!c) return;
+  currentCustomerId = id;
+  document.getElementById("customerModalTitle").textContent = c.name || "Customer";
+  const stats = customerOrderStats(c.email);
+  const custOrders = state.orders.filter(o => o.customer_email === c.email);
+  const custReviews = state.reviews.filter(r => (r.name||"").toLowerCase() === (c.name||"").toLowerCase());
+  const custQuiz = state.quizLeads.filter(l => l.email === c.email || l.phone === c.phone);
+  document.getElementById("customerModalBody").innerHTML = `
+    <div class="form-grid" style="margin-bottom:1.4rem;">
+      <div><h4 style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Contact</h4>
+        <p>${escapeHTML(c.email||'—')}</p><p class="cell-muted">${escapeHTML(c.phone||'')}</p></div>
+      <div><h4 style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Address</h4>
+        <p class="cell-muted">${escapeHTML(c.address||'—')}</p></div>
+      <div><h4 style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Orders</h4>
+        <p>${stats.count} order${stats.count===1?'':'s'} · ${formatINR(stats.ltv)} lifetime</p></div>
+      <div><h4 style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">Quiz Submission</h4>
+        <p class="cell-muted">${custQuiz.length ? custQuiz.map(q => escapeHTML(q.recommended_product||'—')).join(", ") : 'None on file'}</p></div>
+    </div>
+    <h4 style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;">Order History</h4>
+    <div class="table-wrap" style="margin-bottom:1.2rem;"><table>
+      <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+      <tbody>${custOrders.length ? custOrders.map(o => `<tr><td>#${escapeHTML(o.id)}</td><td class="cell-muted">${formatDate(o.created_at)}</td><td>${formatINR(o.total)}</td><td>${statusBadge(o.status)}</td></tr>`).join("") : `<tr><td colspan="4" class="cell-muted">No orders yet.</td></tr>`}</tbody>
+    </table></div>
+    <h4 style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;">Reviews Left</h4>
+    <div style="margin-bottom:1.2rem;">${custReviews.length ? custReviews.map(r => `<div class="mini-row"><span class="mr-name">${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))} — ${escapeHTML(r.product||'')}</span>${statusBadge(r.status||'pending')}</div>`).join("") : '<p class="cell-muted">No reviews left yet.</p>'}</div>
+    <h4 style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;">Internal Notes (staff only — not visible to the customer)</h4>
+    <textarea id="customerNotesInput" style="width:100%;min-height:100px;background:var(--bg-input);border:1px solid var(--border-glass);color:#fff;border-radius:var(--radius-sm);padding:0.7rem;font-size:0.82rem;">${escapeHTML(c.notes||'')}</textarea>
+  `;
+  document.getElementById("customerModalOverlay").classList.add("show");
+}
+async function saveCustomerNotes(){
+  if (!currentCustomerId) return;
+  const notes = document.getElementById("customerNotesInput").value;
+  try{
+    const { error } = await supabase.from("customers").update({ notes }).eq("id", currentCustomerId);
+    if (error) throw error;
+    toast("Notes saved", "success");
+    await loadCustomers();
+  }catch(err){ toast("Failed to save notes: " + err.message, "error"); }
 }
 
 async function loadQuizLeads(){
@@ -1822,66 +1998,194 @@ function getFilteredReviews(){
   const q = (document.getElementById("reviewSearch")?.value || "").toLowerCase();
   const statusF = document.getElementById("reviewStatusFilter")?.value || "";
   return state.reviews.filter(r => {
-    if (q && !((r.name||"")+(r.product||"")+(r.text||"")).toLowerCase().includes(q)) return false;
-    if (statusF && (r.status || 'pending') !== statusF) return false;
+    if (q && !((r.name||"")+(r.product||"")).toLowerCase().includes(q)) return false;
+    if (statusF === "pending" && r.status && r.status !== "pending") return false;
+    if (statusF && statusF !== "pending" && r.status !== statusF) return false;
     return true;
   });
 }
 function renderReviewsList(){
-  const container = document.getElementById("reviewsList");
+  const wrap = document.getElementById("reviewsList");
   const list = getFilteredReviews();
-  if (!list.length){
-    container.innerHTML = `<div class="table-empty">No reviews found.</div>`;
-    return;
-  }
-  container.innerHTML = list.map(r => `
+  if (!list.length){ wrap.innerHTML = `<div class="table-empty">No reviews match this filter.</div>`; return; }
+  wrap.innerHTML = list.map(r => `
     <div class="review-card">
       <div class="rc-top">
         <div>
-          <div class="rc-name">${escapeHTML(r.name)} <span class="cell-muted">(${escapeHTML(r.product || 'General')})</span></div>
+          <div class="rc-name">${escapeHTML(r.name)} ${r.verified ? '<span class="badge badge-success">Verified Purchase</span>' : ''}</div>
           <div class="rc-stars">${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))}</div>
         </div>
-        <div>${statusBadge(r.status || 'pending')}</div>
+        ${statusBadge(r.status || 'pending')}
       </div>
-      <div class="rc-text">${escapeHTML(r.text || '')}</div>
-      <div class="rc-meta">${formatDate(r.created_at)} ${r.verified ? '· Verified Purchase' : ''}</div>
-      ${r.admin_reply ? `<div style="margin-top:0.6rem;padding:0.6rem;background:var(--bg-input);border-radius:8px;font-size:0.78rem;"><strong style="color:var(--gold-primary);">Admin Reply:</strong> ${escapeHTML(r.admin_reply)}</div>` : ''}
+      <p class="rc-text">"${escapeHTML(r.text)}"</p>
+      <div class="rc-meta">${escapeHTML(r.product||'')} · ${formatDate(r.created_at)}</div>
+      ${r.admin_reply ? `<div class="rc-meta" style="margin-top:6px;color:var(--gold-primary);">Reply: ${escapeHTML(r.admin_reply)}</div>` : ''}
       <div class="rc-actions">
-        <button class="btn-ghost" style="padding:0.4rem 0.8rem;font-size:0.72rem;" onclick="updateReviewStatus(${r.id}, 'approved')"><i class="fa-solid fa-check"></i> Approve</button>
-        <button class="btn-danger-ghost" style="padding:0.4rem 0.8rem;font-size:0.72rem;" onclick="updateReviewStatus(${r.id}, 'rejected')"><i class="fa-solid fa-xmark"></i> Reject</button>
-        <button class="btn-ghost" style="padding:0.4rem 0.8rem;font-size:0.72rem;" onclick="toggleReviewReply(${r.id})"><i class="fa-solid fa-reply"></i> Reply</button>
+        <button class="icon-btn success" title="Approve" onclick="setReviewStatus(${r.id},'approved')"><i class="fa-solid fa-check"></i></button>
+        <button class="icon-btn" title="Reject" onclick="setReviewStatus(${r.id},'rejected')"><i class="fa-solid fa-ban"></i></button>
+        <button class="icon-btn" title="Reply" onclick="toggleReplyBox(${r.id})"><i class="fa-solid fa-reply"></i></button>
+        <button class="icon-btn danger" title="Delete" onclick="deleteReview(${r.id})"><i class="fa-solid fa-trash"></i></button>
       </div>
-      <div class="review-reply-box" id="reviewReply_${r.id}">
-        <textarea id="replyText_${r.id}" placeholder="Write your reply...">${escapeHTML(r.admin_reply||'')}</textarea>
-        <button class="btn-gold" style="padding:0.4rem 0.9rem;font-size:0.72rem;" onclick="submitReviewReply(${r.id})">Send Reply</button>
+      <div class="review-reply-box" id="reply_${r.id}">
+        <textarea id="replyText_${r.id}" placeholder="Write a reply to this review...">${escapeHTML(r.admin_reply||'')}</textarea>
+        <button class="btn-ghost" onclick="submitReply(${r.id})"><i class="fa-solid fa-paper-plane"></i> Send Reply</button>
       </div>
     </div>
   `).join("");
 }
 function bindReviewFilters(){
-  document.getElementById("reviewSearch").addEventListener("input", debounce(() => renderReviewsList(), 220));
-  document.getElementById("reviewStatusFilter").addEventListener("change", () => renderReviewsList());
+  document.getElementById("reviewSearch").addEventListener("input", debounce(renderReviewsList, 220));
+  document.getElementById("reviewStatusFilter").addEventListener("change", renderReviewsList);
 }
-async function updateReviewStatus(id, status){
+function toggleReplyBox(id){ document.getElementById("reply_" + id).classList.toggle("show"); }
+async function setReviewStatus(id, status){
   try{
     const { error } = await supabase.from("reviews").update({ status }).eq("id", id);
     if (error) throw error;
-    toast("Review status updated", "success");
+    toast(`Review ${status}`, "success");
     await loadReviews();
     renderDashboard();
   }catch(err){ toast("Failed to update review: " + err.message, "error"); }
 }
-function toggleReviewReply(id){
-  document.getElementById(`reviewReply_${id}`).classList.toggle("show");
-}
-async function submitReviewReply(id){
-  const replyText = document.getElementById(`replyText_${id}`).value.trim();
+async function submitReply(id){
+  const text = document.getElementById("replyText_" + id).value.trim();
   try{
-    const { error } = await supabase.from("reviews").update({ admin_reply: replyText }).eq("id", id);
+    const { error } = await supabase.from("reviews").update({ admin_reply: text }).eq("id", id);
     if (error) throw error;
     toast("Reply saved", "success");
     await loadReviews();
   }catch(err){ toast("Failed to save reply: " + err.message, "error"); }
+}
+async function deleteReview(id){
+  if (!confirm("Delete this review permanently?")) return;
+  try{
+    const { error } = await supabase.from("reviews").delete().eq("id", id);
+    if (error) throw error;
+    toast("Review deleted", "success");
+    await loadReviews();
+    renderDashboard();
+  }catch(err){ toast("Failed to delete review: " + err.message, "error"); }
+}
+
+async function loadNewsletter(){
+  const data = await safeQuery(supabase.from("newsletter_subscribers").select("*").order("created_at", { ascending:false }), "newsletter_subscribers");
+  state.newsletter = data || [];
+  renderNewsletterTable();
+}
+function getFilteredNewsletter(){
+  const q = (document.getElementById("newsletterSearch")?.value || "").toLowerCase();
+  return state.newsletter.filter(n => !q || (n.email||"").toLowerCase().includes(q));
+}
+function renderNewsletterTable(){
+  const tbody = document.getElementById("newsletterTableBody");
+  const list = getFilteredNewsletter();
+  if (!list.length){
+    tbody.innerHTML = `<tr><td colspan="3"><div class="table-empty">No subscribers yet.</div></td></tr>`;
+    document.getElementById("newsletterPagination").innerHTML = "";
+    return;
+  }
+  const { pageItems, pageInfo } = paginate(list, state.newsletterPage, state.pageSize);
+  tbody.innerHTML = pageItems.map(n => `
+    <tr>
+      <td>${escapeHTML(n.email)}</td>
+      <td class="cell-muted">${formatDate(n.created_at)}</td>
+      <td><div class="table-actions">
+        <div class="icon-btn danger" title="Remove" onclick="deleteNewsletterSub(${n.id})"><i class="fa-solid fa-trash"></i></div>
+      </div></td>
+    </tr>
+  `).join("");
+  renderPagination("newsletterPagination", pageInfo, (p) => { state.newsletterPage = p; renderNewsletterTable(); });
+}
+function bindNewsletterFilters(){
+  document.getElementById("newsletterSearch").addEventListener("input", debounce(() => { state.newsletterPage = 1; renderNewsletterTable(); }, 220));
+  document.getElementById("exportNewsletterBtn").addEventListener("click", exportNewsletterCSV);
+}
+function exportNewsletterCSV(){
+  const rows = [["Email","Subscribed On"]];
+  getFilteredNewsletter().forEach(n => rows.push([n.email||"", formatDate(n.created_at)]));
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type:"text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "sukoon-newsletter-subscribers.csv"; a.click();
+  URL.revokeObjectURL(url);
+  toast("Subscriber list exported", "success");
+}
+async function deleteNewsletterSub(id){
+  if (!confirm("Remove this subscriber from the newsletter list?")) return;
+  try{
+    const { error } = await supabase.from("newsletter_subscribers").delete().eq("id", id);
+    if (error) throw error;
+    toast("Subscriber removed", "success");
+    await loadNewsletter();
+    renderDashboard();
+  }catch(err){ toast("Failed to remove subscriber: " + err.message, "error"); }
+}
+
+async function loadContactMessages(){
+  const data = await safeQuery(supabase.from("contact_messages").select("*").order("created_at", { ascending:false }), "contact_messages");
+  state.contactMessages = data || [];
+  renderContactTable();
+}
+function getFilteredContact(){
+  const q = (document.getElementById("contactSearch")?.value || "").toLowerCase();
+  const statusF = document.getElementById("contactStatusFilter")?.value || "";
+  return state.contactMessages.filter(m => {
+    if (q && !((m.name||"")+(m.email||"")+(m.subject||"")).toLowerCase().includes(q)) return false;
+    if (statusF && (m.status || "unread") !== statusF) return false;
+    return true;
+  });
+}
+function renderContactTable(){
+  const tbody = document.getElementById("contactTableBody");
+  const list = getFilteredContact();
+  if (!list.length){
+    tbody.innerHTML = `<tr><td colspan="6"><div class="table-empty">No messages received yet.</div></td></tr>`;
+    document.getElementById("contactPagination").innerHTML = "";
+    return;
+  }
+  const { pageItems, pageInfo } = paginate(list, state.contactPage, state.pageSize);
+  tbody.innerHTML = pageItems.map(m => `
+    <tr>
+      <td>${escapeHTML(m.name||'—')}<div class="cell-muted">${escapeHTML(m.email||'')}</div></td>
+      <td>${escapeHTML(m.subject||'—')}</td>
+      <td class="cell-muted" style="max-width:260px;">${escapeHTML((m.message||'').slice(0,90))}${(m.message||'').length>90?'…':''}</td>
+      <td class="cell-muted">${formatDate(m.created_at)}</td>
+      <td>
+        <select onchange="updateContactStatus(${m.id}, this.value)" style="background:var(--bg-input);color:#fff;border:1px solid var(--border-glass);border-radius:8px;padding:4px 8px;font-size:0.72rem;">
+          <option value="unread" ${(m.status||'unread')==='unread'?'selected':''}>Unread</option>
+          <option value="read" ${m.status==='read'?'selected':''}>Read</option>
+          <option value="replied" ${m.status==='replied'?'selected':''}>Replied</option>
+        </select>
+      </td>
+      <td><div class="table-actions">
+        <div class="icon-btn danger" title="Delete" onclick="deleteContactMessage(${m.id})"><i class="fa-solid fa-trash"></i></div>
+      </div></td>
+    </tr>
+  `).join("");
+  renderPagination("contactPagination", pageInfo, (p) => { state.contactPage = p; renderContactTable(); });
+}
+function bindContactFilters(){
+  document.getElementById("contactSearch").addEventListener("input", debounce(() => { state.contactPage = 1; renderContactTable(); }, 220));
+  document.getElementById("contactStatusFilter").addEventListener("change", () => { state.contactPage = 1; renderContactTable(); });
+}
+async function updateContactStatus(id, status){
+  try{
+    const { error } = await supabase.from("contact_messages").update({ status }).eq("id", id);
+    if (error) throw error;
+    await loadContactMessages();
+    renderDashboard();
+  }catch(err){ toast("Failed to update message status: " + err.message, "error"); }
+}
+async function deleteContactMessage(id){
+  if (!confirm("Delete this message permanently?")) return;
+  try{
+    const { error } = await supabase.from("contact_messages").delete().eq("id", id);
+    if (error) throw error;
+    toast("Message deleted", "success");
+    await loadContactMessages();
+    renderDashboard();
+  }catch(err){ toast("Failed to delete message: " + err.message, "error"); }
 }
 
 async function loadCoupons(){
@@ -1892,224 +2196,269 @@ async function loadCoupons(){
 function renderCouponsTable(){
   const tbody = document.getElementById("couponsTableBody");
   if (!state.coupons.length){
-    tbody.innerHTML = `<tr><td colspan="8"><div class="table-empty">No coupons found.</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="table-empty">No coupons created yet.</div></td></tr>`;
     return;
   }
   tbody.innerHTML = state.coupons.map(c => `
     <tr>
       <td><strong>${escapeHTML(c.code)}</strong></td>
-      <td>${c.type==='percent'?c.value+'%':formatINR(c.value)}</td>
-      <td>${c.min_order ? formatINR(c.min_order) : '—'}</td>
-      <td>${c.max_discount ? formatINR(c.max_discount) : '—'}</td>
-      <td>${c.used_count || 0} / ${c.usage_limit || '∞'}</td>
-      <td class="cell-muted">${c.expiry ? formatDate(c.expiry) : 'Never'}</td>
-      <td>${statusBadge(c.active ? 'active' : 'inactive')}</td>
+      <td>${c.type === 'percent' ? c.value + '%' : formatINR(c.value)}</td>
+      <td class="cell-muted">${c.min_order ? formatINR(c.min_order) : '—'}</td>
+      <td class="cell-muted">${c.max_discount ? formatINR(c.max_discount) : '—'}</td>
+      <td class="cell-muted">${c.used_count||0} / ${c.usage_limit || '∞'}</td>
+      <td class="cell-muted">${c.expiry ? formatDate(c.expiry) : 'No expiry'}</td>
+      <td>${c.active ? statusBadge('active') : statusBadge('inactive')}</td>
       <td><div class="table-actions">
+        <div class="icon-btn" title="Edit" onclick="editCoupon(${c.id})"><i class="fa-solid fa-pen"></i></div>
         <div class="icon-btn danger" title="Delete" onclick="deleteCoupon(${c.id})"><i class="fa-solid fa-trash"></i></div>
       </div></td>
     </tr>
   `).join("");
 }
 function bindCouponModal(){
-  document.getElementById("openAddCouponBtn").addEventListener("click", () => {
-    document.getElementById("couponForm").reset();
-    document.getElementById("couponModalOverlay").classList.add("show");
-  });
-  document.getElementById("closeCouponModal").addEventListener("click", () => document.getElementById("couponModalOverlay").classList.remove("show"));
-  document.getElementById("cancelCouponBtn").addEventListener("click", () => document.getElementById("couponModalOverlay").classList.remove("show"));
-  document.getElementById("couponForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const payload = {
-      code: document.getElementById("couponCode").value.trim().toUpperCase(),
-      type: document.getElementById("couponType").value,
-      value: parseFloat(document.getElementById("couponValue").value) || 0,
-      min_order: parseFloat(document.getElementById("couponMinOrder").value) || null,
-      max_discount: parseFloat(document.getElementById("couponMaxDiscount").value) || null,
-      usage_limit: parseInt(document.getElementById("couponUsageLimit").value) || null,
-      expiry: document.getElementById("couponExpiry").value || null,
-      active: document.getElementById("couponActive").checked
-    };
-    try{
-      const { error } = await supabase.from("coupons").insert(payload);
-      if (error) throw error;
-      toast("Coupon created", "success");
-      document.getElementById("couponModalOverlay").classList.remove("show");
-      await loadCoupons();
-    }catch(err){ toast("Failed to create coupon: " + err.message, "error"); }
-  });
+  document.getElementById("openAddCouponBtn").addEventListener("click", () => openCouponModal());
+  document.getElementById("closeCouponModal").addEventListener("click", closeCouponModal);
+  document.getElementById("cancelCouponBtn").addEventListener("click", closeCouponModal);
+  document.getElementById("couponForm").addEventListener("submit", saveCoupon);
 }
+function openCouponModal(coupon){
+  document.getElementById("couponModalTitle").textContent = coupon ? "Edit Coupon" : "Create Coupon";
+  document.getElementById("couponId").value = coupon?.id || "";
+  document.getElementById("couponCode").value = coupon?.code || "";
+  document.getElementById("couponType").value = coupon?.type || "percent";
+  document.getElementById("couponValue").value = coupon?.value || "";
+  document.getElementById("couponMinOrder").value = coupon?.min_order || "";
+  document.getElementById("couponMaxDiscount").value = coupon?.max_discount || "";
+  document.getElementById("couponUsageLimit").value = coupon?.usage_limit || "";
+  document.getElementById("couponExpiry").value = coupon?.expiry ? coupon.expiry.substring(0,10) : "";
+  document.getElementById("couponActive").checked = coupon ? !!coupon.active : true;
+  document.getElementById("couponModalOverlay").classList.add("show");
+}
+function closeCouponModal(){ document.getElementById("couponModalOverlay").classList.remove("show"); }
+async function saveCoupon(e){
+  e.preventDefault();
+  const id = document.getElementById("couponId").value;
+  const type = document.getElementById("couponType").value;
+  const value = parseFloat(document.getElementById("couponValue").value) || 0;
+  if (type === "percent" && (value <= 0 || value > 100)){
+    toast("Percentage discount must be between 1 and 100", "error");
+    return;
+  }
+  if (value <= 0){
+    toast("Discount value must be greater than 0", "error");
+    return;
+  }
+  const payload = {
+    code: document.getElementById("couponCode").value.trim().toUpperCase(),
+    type: type,
+    value: value,
+    min_order: parseFloat(document.getElementById("couponMinOrder").value) || null,
+    max_discount: parseFloat(document.getElementById("couponMaxDiscount").value) || null,
+    usage_limit: parseInt(document.getElementById("couponUsageLimit").value) || null,
+    expiry: document.getElementById("couponExpiry").value || null,
+    active: document.getElementById("couponActive").checked
+  };
+  try{
+    let error;
+    if (id){ ({ error } = await supabase.from("coupons").update(payload).eq("id", id)); }
+    else { ({ error } = await supabase.from("coupons").insert(payload)); }
+    if (error) throw error;
+    toast(id ? "Coupon updated" : "Coupon created", "success");
+    closeCouponModal();
+    await loadCoupons();
+  }catch(err){ toast("Failed to save coupon: " + err.message, "error"); }
+}
+function editCoupon(id){ const c = state.coupons.find(c => c.id === id); if (c) openCouponModal(c); }
 async function deleteCoupon(id){
   if (!confirm("Delete this coupon?")) return;
   try{
     const { error } = await supabase.from("coupons").delete().eq("id", id);
     if (error) throw error;
-    toast("Coupon removed", "success");
+    toast("Coupon deleted", "success");
     await loadCoupons();
-  }catch(err){ toast("Failed to delete: " + err.message, "error"); }
+  }catch(err){ toast("Failed to delete coupon: " + err.message, "error"); }
 }
 
 async function loadBanners(){
   const data = await safeQuery(supabase.from("banners").select("*").order("sort_order", { ascending:true }), "banners");
   state.banners = data || [];
-  renderBannersGrid();
+  renderBanners();
 }
-function renderBannersGrid(){
+function renderBanners(){
   const grid = document.getElementById("bannersGrid");
-  if (!state.banners.length){
-    grid.innerHTML = `<div class="table-empty" style="grid-column:1/-1;">No banners uploaded.</div>`;
-    return;
-  }
+  if (!state.banners.length){ grid.innerHTML = `<div class="table-empty">No banners uploaded yet.</div>`; return; }
   grid.innerHTML = state.banners.map(b => `
     <div class="media-item">
       <img src="${escapeHTML(withFallback(b.image_url))}" onerror="onImgError(this)">
       <div class="mi-body">
-        <div class="mi-name">Link: ${escapeHTML(b.link_url||'None')}</div>
+        <div class="mi-name">Order: ${b.sort_order ?? '—'} ${b.active ? '· <span style="color:var(--success);">Active</span>' : '· <span style="color:var(--text-muted);">Inactive</span>'}</div>
         <div class="mi-actions">
-          <button class="icon-btn danger" onclick="deleteBanner(${b.id})" style="width:100%;height:28px;"><i class="fa-solid fa-trash"></i> Delete</button>
+          <button class="icon-btn" title="Edit" onclick="editBanner(${b.id})"><i class="fa-solid fa-pen"></i></button>
+          <button class="icon-btn" title="Move Up" onclick="reorderBanner(${b.id},-1)"><i class="fa-solid fa-arrow-up"></i></button>
+          <button class="icon-btn" title="Move Down" onclick="reorderBanner(${b.id},1)"><i class="fa-solid fa-arrow-down"></i></button>
+          <button class="icon-btn danger" title="Delete" onclick="deleteBanner(${b.id})"><i class="fa-solid fa-trash"></i></button>
         </div>
       </div>
     </div>
   `).join("");
 }
 function bindBannerModal(){
-  document.getElementById("openAddBannerBtn").addEventListener("click", () => {
-    document.getElementById("bannerForm").reset();
-    document.getElementById("bannerModalOverlay").classList.add("show");
-  });
-  document.getElementById("closeBannerModal").addEventListener("click", () => document.getElementById("bannerModalOverlay").classList.remove("show"));
-  document.getElementById("cancelBannerBtn").addEventListener("click", () => document.getElementById("bannerModalOverlay").classList.remove("show"));
-  document.getElementById("bannerForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const payload = {
-      image_url: document.getElementById("bannerImage").value.trim(),
-      link_url: document.getElementById("bannerLink").value.trim(),
-      sort_order: parseInt(document.getElementById("bannerSort").value) || 1,
-      active: document.getElementById("bannerActive").checked
-    };
-    try{
-      const { error } = await supabase.from("banners").insert(payload);
-      if (error) throw error;
-      toast("Banner added", "success");
-      document.getElementById("bannerModalOverlay").classList.remove("show");
-      await loadBanners();
-    }catch(err){ toast("Failed to add banner: " + err.message, "error"); }
-  });
+  document.getElementById("openAddBannerBtn").addEventListener("click", () => openBannerModal());
+  document.getElementById("closeBannerModal").addEventListener("click", closeBannerModal);
+  document.getElementById("cancelBannerBtn").addEventListener("click", closeBannerModal);
+  document.getElementById("bannerForm").addEventListener("submit", saveBanner);
+}
+function openBannerModal(banner){
+  document.getElementById("bannerModalTitle").textContent = banner ? "Edit Banner" : "Add Banner";
+  document.getElementById("bannerId").value = banner?.id || "";
+  document.getElementById("bannerImage").value = banner?.image_url || "";
+  document.getElementById("bannerLink").value = banner?.link_url || "";
+  document.getElementById("bannerSort").value = banner?.sort_order ?? (state.banners.length + 1);
+  document.getElementById("bannerActive").checked = banner ? !!banner.active : true;
+  document.getElementById("bannerModalOverlay").classList.add("show");
+}
+function editBanner(id){
+  const b = state.banners.find(b => b.id === id);
+  if (b) openBannerModal(b);
+}
+function closeBannerModal(){ document.getElementById("bannerModalOverlay").classList.remove("show"); }
+async function saveBanner(e){
+  e.preventDefault();
+  const id = document.getElementById("bannerId").value;
+  const payload = {
+    image_url: document.getElementById("bannerImage").value.trim(),
+    link_url: document.getElementById("bannerLink").value.trim(),
+    sort_order: parseInt(document.getElementById("bannerSort").value) || 1,
+    active: document.getElementById("bannerActive").checked
+  };
+  try{
+    let error;
+    if (id){ ({ error } = await supabase.from("banners").update(payload).eq("id", id)); }
+    else { ({ error } = await supabase.from("banners").insert(payload)); }
+    if (error) throw error;
+    toast(id ? "Banner updated" : "Banner added", "success");
+    closeBannerModal();
+    await loadBanners();
+  }catch(err){ toast("Failed to save banner: " + err.message, "error"); }
+}
+async function reorderBanner(id, dir){
+  const idx = state.banners.findIndex(b => b.id === id);
+  const swapIdx = idx + dir;
+  if (swapIdx < 0 || swapIdx >= state.banners.length) return;
+  const a = state.banners[idx], b = state.banners[swapIdx];
+  try{
+    await supabase.from("banners").update({ sort_order: b.sort_order }).eq("id", a.id);
+    await supabase.from("banners").update({ sort_order: a.sort_order }).eq("id", b.id);
+    await loadBanners();
+  }catch(err){ toast("Failed to reorder: " + err.message, "error"); }
 }
 async function deleteBanner(id){
   if (!confirm("Delete this banner?")) return;
   try{
     const { error } = await supabase.from("banners").delete().eq("id", id);
     if (error) throw error;
-    toast("Banner removed", "success");
+    toast("Banner deleted", "success");
     await loadBanners();
   }catch(err){ toast("Failed to delete banner: " + err.message, "error"); }
 }
 
+const CONTENT_FIELD_MAP = {
+  hero: { title:"c_hero_title", sub:"c_hero_sub" },
+  ourstory: { belief:"c_ourstory_belief", body:"c_ourstory_body" },
+  founder: { body:"c_founder_body", sign:"c_founder_sign" },
+  philosophy: { intro:"c_philosophy_intro", points:"c_philosophy_points" },
+  footer: { about:"c_footer_about" },
+  contact: { email:"c_contact_email", whatsapp:"c_contact_whatsapp", hours:"c_contact_hours", response:"c_contact_response" },
+  social: { instagram:"c_social_instagram", facebook:"c_social_facebook", whatsapp:"c_social_whatsapp" },
+  faq: { items:"c_faq_items" },
+  terms: { body:"c_terms" },
+  privacy: { body:"c_privacy" },
+  return: { body:"c_return" },
+  shipping: { body:"c_shipping" }
+};
 async function loadContent(){
   const data = await safeQuery(supabase.from("site_content").select("*"), "site_content");
   if (!data) return;
   data.forEach(row => {
-    const val = row.value || {};
-    if (row.key === "hero"){
-      setVal("c_hero_title", val.title); setVal("c_hero_sub", val.subtitle);
-    } else if (row.key === "ourstory"){
-      setVal("c_ourstory_belief", val.belief); setVal("c_ourstory_body", val.body);
-    } else if (row.key === "founder"){
-      setVal("c_founder_body", val.body); setVal("c_founder_sign", val.signature);
-    } else if (row.key === "philosophy"){
-      setVal("c_philosophy_intro", val.intro); setVal("c_philosophy_points", val.points);
-    } else if (row.key === "footer"){
-      setVal("c_footer_about", val.about);
-    } else if (row.key === "contact"){
-      setVal("c_contact_email", val.email); setVal("c_contact_whatsapp", val.whatsapp);
-      setVal("c_contact_hours", val.hours); setVal("c_contact_response", val.response);
-    } else if (row.key === "social"){
-      setVal("c_social_instagram", val.instagram); setVal("c_social_facebook", val.facebook); setVal("c_social_whatsapp", val.whatsapp);
-    } else if (row.key === "faq"){
-      setVal("c_faq_items", val.items);
-    } else if (row.key === "terms"){ setVal("c_terms", val.text); }
-    else if (row.key === "privacy"){ setVal("c_privacy", val.text); }
-    else if (row.key === "return"){ setVal("c_return", val.text); }
-    else if (row.key === "shipping"){ setVal("c_shipping", val.text); }
+    const fields = CONTENT_FIELD_MAP[row.key];
+    if (!fields || !row.value) return;
+    Object.entries(fields).forEach(([prop, elId]) => {
+      const el = document.getElementById(elId);
+      if (el && row.value[prop] !== undefined) el.value = row.value[prop];
+    });
   });
 }
-function setVal(id, v){ const el = document.getElementById(id); if (el) el.value = v || ""; }
 function bindContentEditors(){
   document.querySelectorAll("[data-save-content]").forEach(btn => {
     btn.addEventListener("click", async () => {
       const key = btn.getAttribute("data-save-content");
-      let val = {};
-      if (key === "hero"){ val = { title: getVal("c_hero_title"), subtitle: getVal("c_hero_sub") }; }
-      else if (key === "ourstory"){ val = { belief: getVal("c_ourstory_belief"), body: getVal("c_ourstory_body") }; }
-      else if (key === "founder"){ val = { body: getVal("c_founder_body"), signature: getVal("c_founder_sign") }; }
-      else if (key === "philosophy"){ val = { intro: getVal("c_philosophy_intro"), points: getVal("c_philosophy_points") }; }
-      else if (key === "footer"){ val = { about: getVal("c_footer_about") }; }
-      else if (key === "contact"){ val = { email: getVal("c_contact_email"), whatsapp: getVal("c_contact_whatsapp"), hours: getVal("c_contact_hours"), response: getVal("c_contact_response") }; }
-      else if (key === "social"){ val = { instagram: getVal("c_social_instagram"), facebook: getVal("c_social_facebook"), whatsapp: getVal("c_social_whatsapp") }; }
-      else if (key === "faq"){ val = { items: getVal("c_faq_items") }; }
-      else if (["terms","privacy","return","shipping"].includes(key)){ val = { text: getVal("c_" + key) }; }
-
+      const fields = CONTENT_FIELD_MAP[key];
+      const value = {};
+      Object.entries(fields).forEach(([prop, elId]) => { value[prop] = document.getElementById(elId).value; });
+      btn.disabled = true;
       try{
-        const { error } = await supabase.from("site_content").upsert({ key, value: val, updated_at: new Date() });
+        const { error } = await supabase.from("site_content").upsert({ key, value, updated_at: new Date().toISOString() });
         if (error) throw error;
-        toast(`Content for "${key}" saved successfully`, "success");
+        toast(`${key.charAt(0).toUpperCase() + key.slice(1)} content saved — live on site`, "success");
       }catch(err){ toast("Failed to save content: " + err.message, "error"); }
+      finally{ btn.disabled = false; }
     });
   });
 }
-function getVal(id){ return document.getElementById(id)?.value || ""; }
 
 async function loadMedia(){
   const data = await safeQuery(supabase.from("media").select("*").order("created_at", { ascending:false }), "media");
   state.media = data || [];
-  renderMediaGrid();
+  renderMedia();
 }
-function renderMediaGrid(){
+function renderMedia(){
   const grid = document.getElementById("mediaGrid");
   const folderF = (document.getElementById("mediaFolderFilter")?.value || "").toLowerCase();
   const list = state.media.filter(m => !folderF || (m.folder||"").toLowerCase().includes(folderF));
-  if (!list.length){
-    grid.innerHTML = `<div class="table-empty" style="grid-column:1/-1;">No media files found.</div>`;
-    return;
-  }
+  if (!list.length){ grid.innerHTML = `<div class="table-empty">No media in library yet.</div>`; return; }
   grid.innerHTML = list.map(m => `
     <div class="media-item">
       <img src="${escapeHTML(withFallback(m.url))}" onerror="onImgError(this)">
       <div class="mi-body">
-        <div class="mi-name">${escapeHTML(m.name||'Untitled')}</div>
+        <div class="mi-name">${escapeHTML(m.name||m.url)}${m.folder ? ' · ' + escapeHTML(m.folder) : ''}</div>
         <div class="mi-actions">
-          <button class="icon-btn" onclick="navigator.clipboard.writeText('${escapeHTML(m.url)}');toast('URL copied to clipboard','success');" title="Copy URL" style="flex:1;"><i class="fa-solid fa-copy"></i></button>
-          <button class="icon-btn danger" onclick="deleteMedia(${m.id})" title="Delete"><i class="fa-solid fa-trash"></i></button>
+          <button class="icon-btn" title="Copy URL" onclick="copyMediaUrl('${escapeHTML(m.url)}')"><i class="fa-solid fa-copy"></i></button>
+          <button class="icon-btn danger" title="Delete" onclick="deleteMedia(${m.id})"><i class="fa-solid fa-trash"></i></button>
         </div>
       </div>
     </div>
   `).join("");
 }
 function bindMediaManager(){
-  document.getElementById("mediaFolderFilter").addEventListener("input", debounce(() => renderMediaGrid(), 220));
   document.getElementById("addMediaBtn").addEventListener("click", async () => {
     const url = document.getElementById("mediaUrlInput").value.trim();
     const name = document.getElementById("mediaNameInput").value.trim();
-    const folder = document.getElementById("mediaFolderInput").value.trim() || "general";
-    if (!url){ toast("Please enter an image URL", "error"); return; }
+    const folder = document.getElementById("mediaFolderInput").value.trim();
+    if (!url){ toast("Please provide an image URL", "error"); return; }
     try{
       const { error } = await supabase.from("media").insert({ url, name, folder });
       if (error) throw error;
-      toast("Media added to library", "success");
+      toast("Added to media library", "success");
       document.getElementById("mediaUrlInput").value = "";
       document.getElementById("mediaNameInput").value = "";
+      document.getElementById("mediaFolderInput").value = "";
       await loadMedia();
     }catch(err){ toast("Failed to add media: " + err.message, "error"); }
   });
+  document.getElementById("mediaFolderFilter").addEventListener("input", debounce(renderMedia, 200));
+}
+function copyMediaUrl(url){
+  navigator.clipboard?.writeText(url).then(() => toast("URL copied to clipboard", "success"))
+    .catch(() => toast("Could not copy — copy manually: " + url, "error"));
 }
 async function deleteMedia(id){
   if (!confirm("Delete this media item?")) return;
   try{
     const { error } = await supabase.from("media").delete().eq("id", id);
     if (error) throw error;
-    toast("Media removed", "success");
+    toast("Media deleted", "success");
     await loadMedia();
-  }catch(err){ toast("Failed to delete: " + err.message, "error"); }
+  }catch(err){ toast("Failed to delete media: " + err.message, "error"); }
 }
 </script>
 </body>
